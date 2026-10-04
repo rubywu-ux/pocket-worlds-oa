@@ -156,28 +156,39 @@ img {
 
 /* ---------- Stage (unopened → bloom) ---------- */
 .stage {
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: block;
+}
+.stage > .bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 .stage--opening {
   cursor: pointer;
 }
 .stage-main {
+  /* Centered on the full screen, like the Figma frame */
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(28px, 4.5dvh, 48px);
-  padding-top: calc(24px + env(safe-area-inset-top));
+  gap: clamp(28px, 4.2dvh, 48px);
 }
 .stage-copy {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
   padding: 0 var(--pad);
 }
 .from-line {
+  position: absolute;
+  top: 100%;
+  margin-top: 14px;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -812,6 +823,20 @@ img {
   .open-details {
     flex: 1;
     max-width: 440px;
+  }
+}
+
+/* Landscape phones */
+@media (max-height: 500px) {
+  :root {
+    --gift: 34dvh;
+  }
+  .stage > .bottom {
+    padding-bottom: 12px;
+    min-height: 0;
+  }
+  .from-line {
+    display: none;
   }
 }
 
