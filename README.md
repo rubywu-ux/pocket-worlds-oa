@@ -45,6 +45,7 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 | Date | Tool | What I asked for | Kept / changed / overruled |
 |---|---|---|---|
 | Oct 4 | Claude | Set up this repo; summarize the brief into this README | |
+| Oct 4 | Claude | Compare tools for building the prototype; write `CLAUDE.md` handoff notes | |
 
 ## Hours log
 
@@ -57,6 +58,7 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 ```
 .
 ├── README.md
+├── CLAUDE.md   ← context and next steps for AI sessions
 └── .gitignore
 ```
 
