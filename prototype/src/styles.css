@@ -187,21 +187,25 @@ img {
 .from-line {
   position: absolute;
   top: 100%;
-  margin-top: 14px;
+  margin-top: 16px;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
+  gap: 10px;
+  font-size: 16px;
   color: #b9c3b9;
 }
-.from-line img {
-  width: 26px;
-  height: 26px;
+.from-line img,
+.note-heading img {
   border-radius: 50%;
   object-fit: cover;
-  background: #2b322b;
-  border: 1px solid rgba(240, 245, 240, 0.25);
+  background: #c9c9c9;
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 0 3px rgba(112, 229, 29, 0.18), 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+.from-line img {
+  width: 40px;
+  height: 40px;
 }
 .from-line strong {
   color: #fff;
@@ -454,7 +458,7 @@ img {
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--font-display);
   font-size: clamp(24px, calc(16px + 2.4vw), 38px);
   line-height: 1;
@@ -463,12 +467,8 @@ img {
   white-space: nowrap;
 }
 .note-heading img {
-  width: 1.25em;
-  height: 1.25em;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #2b322b;
-  border: 1.5px solid rgba(240, 245, 240, 0.4);
+  width: 1.8em;
+  height: 1.8em;
 }
 .overlay-center {
   display: grid;
