@@ -247,7 +247,7 @@ img {
 .rays {
   position: absolute;
   left: -70%;
-  top: -76%;
+  top: -106%;
   width: 240%;
   height: 240%;
   border-radius: 50%;
@@ -262,20 +262,13 @@ img {
   z-index: 2;
   transform-origin: 50% 92%;
 }
-.half {
+.box-img {
   position: absolute;
   left: 0;
   top: 3%;
   width: 100%;
   height: auto;
-  transform-origin: 50% 88%;
   pointer-events: none;
-}
-.half--l {
-  clip-path: inset(0 50% 0 0);
-}
-.half--r {
-  clip-path: inset(0 0 0 50%);
 }
 .sprout {
   position: absolute;
@@ -284,21 +277,57 @@ img {
   overflow: visible;
   pointer-events: none;
 }
+/* Flowers spilling out of the top of the box (behind it) */
+.bloom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
 .flower {
   position: absolute;
+  overflow: visible;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
+}
+.flower--main {
   left: 18%;
-  top: 10%;
+  top: -22%;
   width: 64%;
   height: 64%;
   z-index: 3;
+}
+.flower--l {
+  left: -3%;
+  top: -1%;
+  width: 40%;
+  height: 40%;
+  z-index: 2;
+}
+.flower--r {
+  left: 63%;
+  top: -5%;
+  width: 38%;
+  height: 38%;
+  z-index: 2;
+}
+.top-leaf {
+  position: absolute;
+  z-index: 1;
+  width: 26%;
+  height: 44%;
+  top: -24%;
   overflow: visible;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+}
+.top-leaf--l {
+  left: 10%;
+}
+.top-leaf--r {
+  left: 64%;
 }
 .base-leaf {
   position: absolute;
   z-index: 1;
-  top: 34%;
+  top: 36%;
   width: 34%;
   height: 56%;
   overflow: visible;
@@ -356,7 +385,7 @@ img {
 .burst {
   position: absolute;
   left: 50%;
-  top: 44%;
+  top: 14%;
   width: 0;
   height: 0;
   z-index: 6;
@@ -400,9 +429,35 @@ img {
   z-index: 10;
   display: grid;
   grid-template-rows: 1fr auto;
-  background: rgba(12, 15, 12, 0.74);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(12, 15, 12, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.note-spotlight {
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(185, 240, 145, 0.22), rgba(185, 240, 145, 0.07) 55%, transparent);
+}
+.note-heading {
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, calc(16px + 2.4vw), 38px);
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+}
+.note-heading img {
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2b322b;
+  border: 1.5px solid rgba(240, 245, 240, 0.4);
 }
 .overlay-center {
   display: grid;
@@ -754,6 +809,39 @@ img {
   .open-details {
     flex: 1;
     max-width: 440px;
+  }
+}
+
+/* Short phones: tighten the open view so the actions stay close */
+@media (max-height: 700px) and (max-aspect-ratio: 1/1) {
+  :root {
+    --gift-sm: clamp(120px, 21dvh, 300px);
+  }
+  .replay-hint {
+    display: none;
+  }
+  .open-layout {
+    gap: 14px;
+  }
+}
+
+/* Tablets in portrait: give the open view a little more room */
+@media (min-width: 640px) and (max-aspect-ratio: 1/1) {
+  .open-details {
+    max-width: 500px;
+  }
+  .item-row {
+    height: 68px;
+  }
+  .item-row-art {
+    width: 58px;
+    height: 58px;
+  }
+  .item-row-name {
+    font-size: 16px;
+  }
+  .item-row-sub {
+    font-size: 13px;
   }
 }
 

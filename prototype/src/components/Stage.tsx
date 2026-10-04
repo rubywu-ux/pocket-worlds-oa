@@ -129,8 +129,8 @@ function TuckedEnvelope({ pushed }: { pushed: boolean }) {
 
 /** Where each item lands on top of the bloom (percent of the gift area). */
 const SPOTS: Record<string, { left: string; top: string; width: string }> = {
-  boba: { left: '2%', top: '8%', width: '42%' },
-  bouquet: { left: '52%', top: '0%', width: '46%' },
+  boba: { left: '-6%', top: '-34%', width: '40%' },
+  bouquet: { left: '64%', top: '-38%', width: '42%' },
 }
 
 function RisingItem({ item, index }: { item: GiftItem; index: number }) {
@@ -159,7 +159,7 @@ function RisingItem({ item, index }: { item: GiftItem; index: number }) {
 
 /** Dims the scene, brings the envelope forward, and unfolds Irene's note for reading. */
 function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () => void }) {
-  const noteW = Math.min(w * 0.88, 440)
+  const noteW = Math.min(w * 0.88, 600)
   const envW = Math.min(w * 0.5, 230)
   const envH = (envW * 167) / 156
   const noteH = (noteW * 119) / 355
@@ -168,7 +168,13 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
   const yHidden = envTop + 10 + (noteH * k) / 2
   const yOut = envTop + 12 + (noteH * k) / 6
 
-  const noteAnim = s <= 2 ? { y: yHidden, scale: k, opacity: 0 } : s === 3 ? { y: yOut, scale: k, opacity: 1 } : { y: 0, scale: 1, opacity: 1 }
+  const noteAnim =
+    s <= 2
+      ? { y: yHidden, scale: k, opacity: 0, rotate: -4 }
+      : s === 3
+        ? { y: yOut, scale: k, opacity: 1, rotate: -4 }
+        : { y: 0, scale: 1, opacity: 1, rotate: 0 }
+  const headingY = -noteH / 2 - Math.max(52, noteW * 0.13)
 
   return (
     <motion.div
@@ -179,6 +185,23 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
       transition={{ duration: 0.35 }}
     >
       <div className="overlay-center">
+        <motion.div
+          className="note-spotlight"
+          aria-hidden
+          style={{ width: noteW * 1.5, height: noteW * 1.1 }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={s >= 4 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        />
+        <motion.p
+          className="note-heading"
+          initial={{ opacity: 0, y: headingY + 12 }}
+          animate={s >= 4 ? { opacity: 1, y: headingY } : { opacity: 0, y: headingY + 12 }}
+          transition={{ delay: s >= 4 ? 0.35 : 0, type: 'spring', stiffness: 260, damping: 24 }}
+        >
+          <img src={SENDER.avatar} alt="" />
+          {SENDER.name} left you a note
+        </motion.p>
         <Note
           layoutId="note"
           className="note--reading"

@@ -3,11 +3,13 @@ import { motion, type TargetAndTransition, type Transition } from 'motion/react'
 import { ART } from '../data'
 
 /**
- * The sweetheart gift box.
- * idle   → floats and gives a little "tap me" wiggle now and then
- * wiggle → anticipation: squash, shake, and a sprout pushes out of the box
- * bloom  → the bud bursts: the heart splits open like petals and a flower blooms
- * open   → resting, opened state (used in the final layout)
+ * The sweetheart gift box, treated like a planter.
+ * idle   → floats, glows, and gives a little "tap me" wiggle now and then
+ * wiggle → anticipation: squash and shake while a sprout pushes up out of the box
+ * bloom  → the bud bursts: flowers spill out of the top of the box, light rays spin up
+ * open   → resting, bloomed state (used in the final layout)
+ *
+ * The heart itself stays whole (splitting a heart reads as heartbreak).
  */
 export type GiftMode = 'idle' | 'wiggle' | 'bloom' | 'open'
 
@@ -16,37 +18,33 @@ type GiftProps = {
   layoutId?: string
   onActivate?: () => void
   label?: string
-  /** In the open state, animate the box opening (used after a skip) instead of appearing already open. */
+  /** In the open state, play a quick bloom (used after a skip) instead of appearing already bloomed. */
   enterFromClosed?: boolean
 }
 
-const HALF_CLOSED = { rotate: 0, x: '0%', y: '0%' }
-const HALF_L_OPEN = { rotate: -30, x: '-17%', y: '4%' }
-const HALF_R_OPEN = { rotate: 30, x: '17%', y: '4%' }
-const POP: Transition = { type: 'spring', stiffness: 240, damping: 13 }
-
 const BOX: Record<GiftMode, TargetAndTransition> = {
-  idle: { scaleX: 1, scaleY: 1, rotate: [0, 0, -4, 4, -3, 2, 0] },
+  idle: { scaleX: 1, scaleY: 1, y: '0%', rotate: [0, 0, -4, 4, -3, 2, 0] },
   wiggle: {
-    scaleX: [1, 1.1, 0.95, 1.03, 1, 1, 1, 1, 1, 1, 1.07],
-    scaleY: [1, 0.86, 1.08, 0.97, 1, 1, 1, 1, 1, 1, 0.9],
+    scaleX: [1, 1.1, 0.95, 1.03, 1, 1, 1, 1, 1, 1, 1.08],
+    scaleY: [1, 0.86, 1.08, 0.97, 1, 1, 1, 1, 1, 1, 0.88],
     rotate: [0, 0, 0, 0, 0, -6, 7, -8, 8, -5, 0],
+    y: '0%',
   },
-  bloom: { scaleX: 1, scaleY: 1, rotate: 0 },
-  open: { scaleX: 1, scaleY: 1, rotate: 0 },
+  bloom: { scaleX: [1.08, 0.93, 1.03, 1], scaleY: [0.88, 1.12, 0.97, 1], rotate: 0, y: '10%' },
+  open: { scaleX: 1, scaleY: 1, rotate: 0, y: '10%' },
 }
 const BOX_T: Record<GiftMode, Transition> = {
   idle: { duration: 1.1, repeat: Infinity, repeatDelay: 2.8, ease: 'easeInOut', delay: 1.2 },
   wiggle: { duration: 1.15, ease: 'easeInOut', times: [0, 0.1, 0.2, 0.3, 0.38, 0.5, 0.6, 0.7, 0.8, 0.9, 1] },
-  bloom: { type: 'spring', stiffness: 420, damping: 11 },
-  open: { duration: 0.3 },
+  bloom: { duration: 0.7, ease: 'easeOut', y: { type: 'spring', stiffness: 260, damping: 14 } },
+  open: { duration: 0.35 },
 }
 
 const GLOW: Record<GiftMode, TargetAndTransition> = {
   idle: { opacity: [0.22, 0.4, 0.22], scale: [0.95, 1.03, 0.95] },
   wiggle: { opacity: 0.75, scale: 1.1 },
-  bloom: { opacity: [1, 0.55], scale: [1.5, 1.12] },
-  open: { opacity: 0.45, scale: 1 },
+  bloom: { opacity: [1, 0.5], scale: [1.5, 1.1] },
+  open: { opacity: 0.4, scale: 1 },
 }
 const GLOW_T: Record<GiftMode, Transition> = {
   idle: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' },
@@ -57,9 +55,8 @@ const GLOW_T: Record<GiftMode, Transition> = {
 
 export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = false }: GiftProps) {
   const bloomed = mode === 'bloom' || mode === 'open'
-  // Already-open gifts (final layout) appear open without replaying the bloom, unless we got here by skipping.
+  // Already-open gifts (final layout) appear bloomed without replaying, unless we got here by skipping.
   const instant = mode === 'open' && !enterFromClosed
-  const halfInitial = (open: typeof HALF_L_OPEN) => (instant ? open : mode === 'open' ? HALF_CLOSED : false)
 
   const onKey = (e: KeyboardEvent) => {
     if (onActivate && (e.key === 'Enter' || e.key === ' ')) {
@@ -105,36 +102,18 @@ export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = fals
         )}
 
         <BaseLeaves show={bloomed} instant={instant} />
+        {bloomed && <Bloom instant={instant} />}
         {(mode === 'wiggle' || mode === 'bloom') && <Sprout burst={mode === 'bloom'} />}
 
-        <motion.div className="box" initial={false} animate={BOX[mode]} transition={BOX_T[mode]}>
-          <motion.img
-            src={ART.giftBox}
-            className="half half--l"
-            alt=""
-            draggable={false}
-            initial={halfInitial(HALF_L_OPEN)}
-            animate={bloomed ? HALF_L_OPEN : HALF_CLOSED}
-            transition={bloomed ? POP : { duration: 0.3 }}
-          />
-          <motion.img
-            src={ART.giftBox}
-            className="half half--r"
-            alt=""
-            draggable={false}
-            initial={halfInitial(HALF_R_OPEN)}
-            animate={bloomed ? HALF_R_OPEN : HALF_CLOSED}
-            transition={bloomed ? POP : { duration: 0.3 }}
-          />
+        <motion.div className="box" initial={instant ? BOX.open : false} animate={BOX[mode]} transition={BOX_T[mode]}>
+          <img src={ART.giftBox} className="box-img" alt="" draggable={false} />
         </motion.div>
-
-        {bloomed && <Flower instant={instant} />}
       </div>
     </motion.div>
   )
 }
 
-/** A seedling that pushes up out of the box while it shakes. */
+/** A seedling that pushes up out of the box while it shakes. Its bud becomes the big flower. */
 function Sprout({ burst }: { burst: boolean }) {
   const id = useId()
   return (
@@ -201,67 +180,58 @@ function Sprout({ burst }: { burst: boolean }) {
   )
 }
 
-/** The flower that blooms out of the opened box. Colors pulled from the sweetheart box and its ribbon. */
-function Flower({ instant }: { instant: boolean }) {
+type FlowerVariant = 'main' | 'pink' | 'yellow'
+const PALETTE: Record<FlowerVariant, { outer: [string, string, string]; inner: [string, string]; stroke: [string, string] }> = {
+  main: { outer: ['#ffd3e9', '#ff8cc6', '#f0559f'], inner: ['#ffb3d7', '#ff4fa3'], stroke: ['#d93a86', '#c92776'] },
+  pink: { outer: ['#ffe3f1', '#ffb0d6', '#f57ab5'], inner: ['#ffd0e6', '#ff86bf'], stroke: ['#e0629d', '#d5508f'] },
+  yellow: { outer: ['#fff8d6', '#ffe486', '#f7c33d'], inner: ['#fff0b3', '#ffd95a'], stroke: ['#e3a524', '#d99a1a'] },
+}
+
+/** A glossy cartoon flower, colored from the sweetheart box and its ribbon. */
+function Flower({ variant, className, tilt = 0, delay, instant }: { variant: FlowerVariant; className: string; tilt?: number; delay: number; instant: boolean }) {
   const id = useId()
-  const outer = Array.from({ length: 8 }, (_, i) => i * 45)
-  const inner = Array.from({ length: 8 }, (_, i) => i * 45 + 22.5)
+  const p = PALETTE[variant]
+  const petals = variant === 'main' ? 8 : 6
+  const step = 360 / petals
   return (
     <motion.svg
-      className="flower"
+      className={`flower ${className}`}
       viewBox="-50 -50 100 100"
       aria-hidden
-      initial={instant ? { scale: 1, rotate: 0, opacity: 1 } : { scale: 0, rotate: -70, opacity: 0 }}
-      animate={{ scale: 1, rotate: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 190, damping: 11, delay: 0.03 }}
+      style={{ originX: 0.5, originY: 0.85, rotate: tilt }}
+      initial={instant ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 210, damping: 11, delay: instant ? 0 : delay }}
     >
       <defs>
-        <radialGradient id={`${id}-outer`} cx="0.5" cy="0.15" r="0.95">
-          <stop offset="0" stopColor="#ffd3e9" />
-          <stop offset="0.55" stopColor="#ff8cc6" />
-          <stop offset="1" stopColor="#f0559f" />
+        <radialGradient id={`${id}-o`} cx="0.5" cy="0.15" r="0.95">
+          <stop offset="0" stopColor={p.outer[0]} />
+          <stop offset="0.55" stopColor={p.outer[1]} />
+          <stop offset="1" stopColor={p.outer[2]} />
         </radialGradient>
-        <radialGradient id={`${id}-inner`} cx="0.5" cy="0.2" r="0.9">
-          <stop offset="0" stopColor="#ffb3d7" />
-          <stop offset="1" stopColor="#ff4fa3" />
+        <radialGradient id={`${id}-i`} cx="0.5" cy="0.2" r="0.9">
+          <stop offset="0" stopColor={p.inner[0]} />
+          <stop offset="1" stopColor={p.inner[1]} />
         </radialGradient>
-        <radialGradient id={`${id}-center`} cx="0.38" cy="0.32" r="0.8">
+        <radialGradient id={`${id}-c`} cx="0.38" cy="0.32" r="0.8">
           <stop offset="0" stopColor="#fff3b0" />
-          <stop offset="0.6" stopColor="#ffd95a" />
-          <stop offset="1" stopColor="#f2b324" />
+          <stop offset="0.6" stopColor={variant === 'yellow' ? '#ffb347' : '#ffd95a'} />
+          <stop offset="1" stopColor={variant === 'yellow' ? '#ee8a1c' : '#f2b324'} />
         </radialGradient>
       </defs>
-      <g>
-        {outer.map((a) => (
-          <ellipse
-            key={a}
-            cx="0"
-            cy="-25"
-            rx="12.5"
-            ry="22"
-            transform={`rotate(${a})`}
-            fill={`url(#${id}-outer)`}
-            stroke="#d93a86"
-            strokeWidth="1.2"
-          />
+      <motion.g
+        initial={instant ? { rotate: 0 } : { rotate: -60 }}
+        animate={{ rotate: 0 }}
+        transition={{ type: 'spring', stiffness: 120, damping: 12, delay: instant ? 0 : delay }}
+      >
+        {Array.from({ length: petals }, (_, i) => (
+          <ellipse key={`o${i}`} cx="0" cy="-25" rx="12.5" ry="22" transform={`rotate(${i * step})`} fill={`url(#${id}-o)`} stroke={p.stroke[0]} strokeWidth="1.2" />
         ))}
-      </g>
-      <g>
-        {inner.map((a) => (
-          <ellipse
-            key={a}
-            cx="0"
-            cy="-15"
-            rx="8.5"
-            ry="14"
-            transform={`rotate(${a})`}
-            fill={`url(#${id}-inner)`}
-            stroke="#c92776"
-            strokeWidth="1"
-          />
+        {Array.from({ length: petals }, (_, i) => (
+          <ellipse key={`i${i}`} cx="0" cy="-15" rx="8.5" ry="14" transform={`rotate(${i * step + step / 2})`} fill={`url(#${id}-i)`} stroke={p.stroke[1]} strokeWidth="1" />
         ))}
-      </g>
-      <circle r="11" fill={`url(#${id}-center)`} stroke="#e09a1c" strokeWidth="1.2" />
+      </motion.g>
+      <circle r="11" fill={`url(#${id}-c)`} stroke="#e09a1c" strokeWidth="1.2" />
       {[0, 72, 144, 216, 288].map((a) => (
         <circle key={a} r="1.3" cx="0" cy="-5.5" transform={`rotate(${a})`} fill="#e08a12" />
       ))}
@@ -270,48 +240,64 @@ function Flower({ instant }: { instant: boolean }) {
   )
 }
 
-/** Two big leaves that unfurl from under the box, so the gift reads as something planted. */
-function BaseLeaves({ show, instant }: { show: boolean; instant: boolean }) {
-  const id = useId()
-  const t: Transition = { type: 'spring', stiffness: 200, damping: 12, delay: show && !instant ? 0.14 : 0 }
-  const leaf = (
+/** Flowers and leaves spilling out of the top of the box. They sit behind it, so they read as growing out of it. */
+function Bloom({ instant }: { instant: boolean }) {
+  return (
+    <div className="bloom" aria-hidden>
+      <Leaf className="top-leaf top-leaf--l" rotate={-48} delay={0.16} instant={instant} />
+      <Leaf className="top-leaf top-leaf--r" rotate={48} delay={0.2} instant={instant} mirror />
+      <Flower variant="yellow" className="flower--side flower--l" tilt={-18} delay={0.14} instant={instant} />
+      <Flower variant="pink" className="flower--side flower--r" tilt={16} delay={0.2} instant={instant} />
+      <Flower variant="main" className="flower--main" delay={0.02} instant={instant} />
+    </div>
+  )
+}
+
+function LeafShape({ id }: { id: string }) {
+  return (
     <>
-      <path d="M58 98 C 12 82, 2 34, 28 2 C 54 30, 63 70, 58 98 Z" fill={`url(#${id}-g)`} />
+      <defs>
+        <linearGradient id={`${id}-g`} x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0" stopColor="#a6f264" />
+          <stop offset="1" stopColor="#3f9e1c" />
+        </linearGradient>
+      </defs>
+      <path d="M58 98 C 12 82, 2 34, 28 2 C 54 30, 63 70, 58 98 Z" fill={`url(#${id}-g)`} stroke="#2f7d12" strokeWidth="1.2" />
       <path d="M57 96 C 42 70, 35 40, 29 8" stroke="rgba(10,40,0,0.25)" strokeWidth="2.2" fill="none" strokeLinecap="round" />
     </>
   )
+}
+
+function Leaf({ className, rotate, delay, instant, mirror = false }: { className: string; rotate: number; delay: number; instant: boolean; mirror?: boolean }) {
+  const id = useId()
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 60 100"
+      aria-hidden
+      style={{ originX: mirror ? 0 : 1, originY: 1 }}
+      initial={instant ? { scale: 1, rotate } : { scale: 0, rotate: 0 }}
+      animate={{ scale: 1, rotate }}
+      transition={{ type: 'spring', stiffness: 200, damping: 12, delay: instant ? 0 : delay }}
+    >
+      {mirror ? (
+        <g transform="translate(60 0) scale(-1 1)">
+          <LeafShape id={id} />
+        </g>
+      ) : (
+        <LeafShape id={id} />
+      )}
+    </motion.svg>
+  )
+}
+
+/** Two big leaves that unfurl from under the box, so the gift reads as something planted. */
+function BaseLeaves({ show, instant }: { show: boolean; instant: boolean }) {
+  if (!show) return null
   return (
     <>
-      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden>
-        <defs>
-          <linearGradient id={`${id}-g`} x1="0.2" y1="0" x2="0.8" y2="1">
-            <stop offset="0" stopColor="#a6f264" />
-            <stop offset="1" stopColor="#3f9e1c" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <motion.svg
-        className="base-leaf base-leaf--l"
-        viewBox="0 0 60 100"
-        aria-hidden
-        style={{ originX: 1, originY: 1 }}
-        initial={instant ? { scale: 1, rotate: -40 } : false}
-        animate={show ? { scale: 1, rotate: -40 } : { scale: 0, rotate: 0 }}
-        transition={t}
-      >
-        {leaf}
-      </motion.svg>
-      <motion.svg
-        className="base-leaf base-leaf--r"
-        viewBox="0 0 60 100"
-        aria-hidden
-        style={{ originX: 0, originY: 1 }}
-        initial={instant ? { scale: 1, rotate: 40 } : false}
-        animate={show ? { scale: 1, rotate: 40 } : { scale: 0, rotate: 0 }}
-        transition={t}
-      >
-        <g transform="translate(60 0) scale(-1 1)">{leaf}</g>
-      </motion.svg>
+      <Leaf className="base-leaf base-leaf--l" rotate={-40} delay={0.12} instant={instant} />
+      <Leaf className="base-leaf base-leaf--r" rotate={40} delay={0.12} instant={instant} mirror />
     </>
   )
 }
