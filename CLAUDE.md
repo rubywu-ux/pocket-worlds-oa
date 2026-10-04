@@ -39,7 +39,7 @@ Hard requirements:
 - Built and working: idle screen matching Figma, sprout → bloom opening (heart stays whole; flowers spill out of the box), envelope → note unfold reading view, open state (items list, note + rocking sticker, Send a gift back / Visit Irene's garden toasts, close, replay), skip with a 450 ms double-tap guard, keyboard, reduced motion, phone / tablet / desktop layouts.
 - Code map: `src/timeline.ts` (step timings), `src/App.tsx` (state machine), `components/Stage.tsx` (idle → bloom → note overlay), `Gift.tsx`, `Note.tsx`, `OpenView.tsx`, `ClosedView.tsx`, `Particles.tsx`.
 - Deploy: `.github/workflows/deploy-prototype.yml` publishes `prototype/dist` to https://rubywu-ux.github.io/pocket-worlds-oa/ on every push. Pages is on (Source = GitHub Actions) and the site is live. Claude can't change Pages settings via the API.
-- Art in `public/assets/` is 1× renders from Figma (Figma's asset server is blocked from Claude's sandbox). Ruby is exporting 4× PNGs into `exports/` in her local folder; swap them in (same file names) when they arrive, then regenerate `public/og.png` (link preview).
+- Art in `public/assets/` is Ruby's 4× Figma exports, converted to WebP (≈390 KB total) and preloaded in `main.tsx`. If art changes, regenerate `public/og.png` (link preview, 1200×630 of the bloomed state).
 - Fonts are self-hosted via @fontsource (Google Fonts is blocked in the sandbox).
 - Screenshot QA: Playwright with `executablePath: /opt/pw-browsers/chromium-1194/chrome-linux/chrome` against `npx vite preview --port 4173`.
 
@@ -92,4 +92,4 @@ I'm continuing my Pocket Worlds Product Designer take-home from another session.
 ## Session log
 
 - 2026-10-04: Created the repo and linked it to the local folder. Wrote the README (brief summary, checklist, AI-use and hours logs). Compared prototype tool options (see Decisions). Added this handoff file.
-- 2026-10-04: Ruby wrote her prototype direction (now `prototype/SPEC.md`). Built the full prototype and the Pages deploy workflow. Changed the first bloom concept (heart split in two) to flowers growing out of a whole heart, because a split heart reads as heartbreak. Pages switched on; live at https://rubywu-ux.github.io/pocket-worlds-oa/. Waiting on: 4× art exports from Ruby.
+- 2026-10-04: Ruby wrote her prototype direction (now `prototype/SPEC.md`). Built the full prototype and the Pages deploy workflow. Changed the first bloom concept (heart split in two) to flowers growing out of a whole heart, because a split heart reads as heartbreak. Pages switched on; live at https://rubywu-ux.github.io/pocket-worlds-oa/. Swapped in Ruby's 4× art (WebP).
