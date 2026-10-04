@@ -32,13 +32,29 @@ Hard requirements:
 - 2026-10-04: Pocket Worlds' template files (`*.fig`, `Take-Home*.zip`) are git-ignored. Never commit them.
 - Prototype tooling: **not decided yet.** Claude recommended React + Motion (Framer Motion), deployed to GitHub Pages from this repo (`rubywu-ux.github.io/pocket-worlds-oa`), for fine control of motion, gestures and interruptible states. Alternatives discussed: Figma Make (closest to the Figma visuals, less control), v0 (fast but generic look), Cursor/Codex locally.
 
-## Next steps
+## Next steps (proposed plan, 2026-10-04)
 
-1. Ruby picks the prototype tool.
-2. Get the provided Reception screen and the Gift Shop's visual style into the session, either by connecting the Figma connector or by having Ruby export the frames plus gift art (PNG/SVG) into the local folder.
-3. Sketch 2–3 genuinely different opening concepts, each covering the opening animation, how the note pairs with the gift, and what happens between sender and recipient afterward. Ruby chooses.
-4. Build in `prototype/`, deploy to a live link, then add the link to `README.md` and to the top of the Figma file.
-5. Keep the AI-use log and hours log in `README.md` current.
+1. **Study the provided screens.** Pull the Gift Shop and Reception frames from Figma (the connector works on the original account) and note the visual language: color, type, radii, buttons, illustration style, tone of copy, Figma variables.
+2. **Define the gift model.** Decide what a gift contains: the item, its wrapping, the note, the sender, and the 2–3 things customized in Part 2. Parts 2 and 4 have to agree on this, so settle it first.
+3. **Sketch 2–3 opening concepts for Part 4.** Each one answers the three questions. Ruby picks one.
+4. **Pick the tool and build Part 4** in `prototype/`. Build order:
+   - static screen
+   - opening interaction
+   - note reveal
+   - after-opening connection
+   - edge cases (tap spam, skip, replay, reset)
+   - mobile + desktop
+   - deploy
+
+   Commit after each step.
+5. **Design Parts 2 and 3 in Figma:** 3 genuinely different wireframes for Customization & Recipient, its final design, then the Checkout & Send final design built from their wireframe and kept in the game's world.
+6. **Assemble the Figma file:**
+   - flows left to right
+   - portfolio + prototype links at the top
+   - hours stated
+   - decision notes
+   - AI-use disclosure
+7. **QA and submit.** Click-and-break the prototype on a phone, open the link logged out, then run the README checklist.
 
 ## Working conventions
 
