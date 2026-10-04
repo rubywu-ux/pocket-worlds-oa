@@ -30,7 +30,9 @@ Hard requirements:
 
 - 2026-10-04: The repo is named `pocket-worlds-oa` and is public. Commits are authored as Ruby Wu with a `Co-Authored-By: Claude` trailer (Ruby chose to keep it).
 - 2026-10-04: Pocket Worlds' template files (`*.fig`, `Take-Home*.zip`) are git-ignored. Never commit them.
-- Prototype tooling: **not decided yet.** Claude recommended React + Motion (Framer Motion), deployed to GitHub Pages from this repo (`rubywu-ux.github.io/pocket-worlds-oa`), for fine control of motion, gestures and interruptible states. Alternatives discussed: Figma Make (closest to the Figma visuals, less control), v0 (fast but generic look), Cursor/Codex locally.
+- 2026-10-04: Prototype tooling: **React + Motion (Framer Motion) built with Vite, deployed to GitHub Pages** from this repo (`rubywu-ux.github.io/pocket-worlds-oa`). Ruby asked to start building on Claude's recommendation. Alternatives considered: Figma Make, v0, Cursor/Codex.
+- 2026-10-04: Ruby's direction for the prototype is in **`prototype/SPEC.md`** (gardening bloom opening, Duolingo-level delight, note unfolding from the envelope, note under the gift with a rocking sticker, "Send a gift back" / "Visit Irene's garden" / close, skip + replay behavior, works on all screen sizes). Read it before changing the prototype.
+- Ruby's finished Parts 2 and 3 designs are in Figma (section "FINAL", node 9146:1156): Gift Shop, Customization & Recipient, Checkout & Send, Reception + Opening (9146:1157).
 
 ## Next steps (proposed plan, 2026-10-04)
 
