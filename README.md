@@ -6,7 +6,7 @@ Ruby Wu's Product Designer take-home for **Pocket Worlds** (2026).
 |---|---|
 | Brief | [Product Designer Take-Home Evaluation (2026)](https://pocketworlds.notion.site/Product-Designer-Take-Home-Evaluation-2026-3c8df96d6c1e8042aca9e2b259794841) |
 | Figma | [Take-Home](https://www.figma.com/design/MRDdpLZtFAk8viy9ZWGRxf/Take-Home?node-id=9146-1156) |
-| Prototype | _live link coming_ |
+| Prototype | [rubywu-ux.github.io/pocket-worlds-oa](https://rubywu-ux.github.io/pocket-worlds-oa/) (source in [`prototype/`](prototype/)) |
 | Portfolio | _add link_ |
 
 ## The brief, in short
@@ -25,6 +25,29 @@ The prototype should answer:
 - What is the opening animation?
 - How is the gift note shown together with the gift?
 - Is there any further connection between sender and recipient after opening?
+
+## Prototype: Reception + Opening
+
+**Live:** https://rubywu-ux.github.io/pocket-worlds-oa/ . Works on phone, tablet and desktop. It's Sage's view of opening a gift from Irene. My direction for it is in [`prototype/SPEC.md`](prototype/SPEC.md).
+
+**How it answers the brief's questions**
+
+| Question | Answer in the prototype |
+|---|---|
+| What is the opening animation? | Tap the gift or **Open**. The box squashes and shakes while a sprout pushes out of the top. Then the bud bursts: flowers and leaves spill out of the box like a planter, light rays spin up, petals and sparkles burst out, and the items (Matcha Boba ×2, Summertime Bouquet ×1) pop up out of the bloom. |
+| How is the note shown with the gift? | The envelope floats to the center and the folded note slides up out of it. It unfolds panel by panel into a reading view ("Irene left you a note"), and Irene's Matcha Boba sticker slaps on. After **Continue**, the note settles underneath the opened gift and its items. The sticker keeps gently rocking: "I'm here!" |
+| Any further connection after opening? | **Send a gift back** (opens the gift shop with Irene as recipient) and **Visit Irene's garden**. |
+
+**Things to try (and break)**
+
+- Tap anywhere during the animation to skip straight to the opened gift. A double-tap on Open in quick succession doesn't count as a skip.
+- Tap the opened gift, or ↻, to replay. ✕ closes; "Replay the prototype" starts over.
+- Keyboard: Space/Enter opens, skips and continues. R replays. Esc closes.
+- "Reduce motion" in your OS settings gets a shorter, calmer version.
+
+**Built with:** React, [Motion](https://motion.dev) (springs, gestures, shared-element transitions), Vite, deployed to GitHub Pages by a GitHub Action on every push. All motion is rendered live in code; nothing is pre-rendered video.
+
+Run locally: `cd prototype && npm install && npm run dev`
 
 ## Checklist
 
@@ -46,6 +69,7 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 |---|---|---|---|
 | Oct 4 | Claude | Set up this repo; summarize the brief into this README | |
 | Oct 4 | Claude | Compare tools for building the prototype; write `CLAUDE.md` handoff notes | |
+| Oct 4 | Claude | Build the Reception + Opening prototype from my written direction (`prototype/SPEC.md`) and my Figma screens | |
 
 ## Hours log
 
@@ -58,8 +82,10 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 ```
 .
 ├── README.md
-├── CLAUDE.md   ← context and next steps for AI sessions
-└── .gitignore
+├── CLAUDE.md                 ← context and next steps for AI sessions
+├── prototype/                ← Reception + Opening prototype (React + Motion + Vite)
+│   ├── SPEC.md               ← my direction for the prototype
+│   ├── src/components/       ← Gift, Note, Stage (opening), OpenView, ClosedView
+│   └── public/assets/        ← art exported from my Figma file
+└── .github/workflows/        ← deploys the prototype to GitHub Pages
 ```
-
-The Reception + Opening prototype code will live in `prototype/`.

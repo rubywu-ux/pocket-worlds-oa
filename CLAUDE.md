@@ -34,6 +34,15 @@ Hard requirements:
 - 2026-10-04: Ruby's direction for the prototype is in **`prototype/SPEC.md`** (gardening bloom opening, Duolingo-level delight, note unfolding from the envelope, note under the gift with a rocking sticker, "Send a gift back" / "Visit Irene's garden" / close, skip + replay behavior, works on all screen sizes). Read it before changing the prototype.
 - Ruby's finished Parts 2 and 3 designs are in Figma (section "FINAL", node 9146:1156): Gift Shop, Customization & Recipient, Checkout & Send, Reception + Opening (9146:1157).
 
+## Prototype status (2026-10-04)
+
+- Built and working: idle screen matching Figma, sprout → bloom opening (heart stays whole; flowers spill out of the box), envelope → note unfold reading view, open state (items list, note + rocking sticker, Send a gift back / Visit Irene's garden toasts, close, replay), skip with a 450 ms double-tap guard, keyboard, reduced motion, phone / tablet / desktop layouts.
+- Code map: `src/timeline.ts` (step timings), `src/App.tsx` (state machine), `components/Stage.tsx` (idle → bloom → note overlay), `Gift.tsx`, `Note.tsx`, `OpenView.tsx`, `ClosedView.tsx`, `Particles.tsx`.
+- Deploy: `.github/workflows/deploy-prototype.yml` publishes `prototype/dist` to https://rubywu-ux.github.io/pocket-worlds-oa/ on every push. Needs repo Settings → Pages → Source = **GitHub Actions** (Ruby must switch it on; Claude can't via API).
+- Art in `public/assets/` is 1× renders from Figma (Figma's asset server is blocked from Claude's sandbox). Ruby is exporting 4× PNGs into `exports/` in her local folder; swap them in (same file names) when they arrive, then regenerate `public/og.png` (link preview).
+- Fonts are self-hosted via @fontsource (Google Fonts is blocked in the sandbox).
+- Screenshot QA: Playwright with `executablePath: /opt/pw-browsers/chromium-1194/chrome-linux/chrome` against `npx vite preview --port 4173`.
+
 ## Next steps (proposed plan, 2026-10-04)
 
 1. **Study the provided screens.** Pull the Gift Shop and Reception frames from Figma (the connector works on the original account) and note the visual language: color, type, radii, buttons, illustration style, tone of copy, Figma variables.
@@ -83,3 +92,4 @@ I'm continuing my Pocket Worlds Product Designer take-home from another session.
 ## Session log
 
 - 2026-10-04: Created the repo and linked it to the local folder. Wrote the README (brief summary, checklist, AI-use and hours logs). Compared prototype tool options (see Decisions). Added this handoff file.
+- 2026-10-04: Ruby wrote her prototype direction (now `prototype/SPEC.md`). Built the full prototype and the Pages deploy workflow. Changed the first bloom concept (heart split in two) to flowers growing out of a whole heart, because a split heart reads as heartbreak. Waiting on: Pages switched on, 4× art exports.
