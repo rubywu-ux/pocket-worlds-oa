@@ -49,6 +49,19 @@ Hard requirements:
 - GitHub: Claude can't create repos. Pushing needs GitHub connected on the current Claude account and the Claude GitHub App granted access to this repo.
 - The repo is public, so never commit secrets or Pocket Worlds' template files.
 
+## Prompt to start a new session
+
+Paste this into a new Claude session (any account) with the Pocket Worlds folder linked:
+
+```
+I'm continuing my Pocket Worlds Product Designer take-home from another session. All context is in my public GitHub repo: https://github.com/rubywu-ux/pocket-worlds-oa (my local copy is the Pocket Worlds folder I linked: iCloud Drive › Ruby Workspace › Pocket Worlds).
+
+1. Read CLAUDE.md and README.md first. CLAUDE.md has the decisions so far and the next steps.
+2. Check whether GitHub and Figma are connected for this account. If not, tell me before you need them.
+3. Pick up from "Next steps" in CLAUDE.md, and ask me before any big design decision.
+4. Before we stop, or if you're running low on usage, update "Next steps" and "Session log" in CLAUDE.md, then commit and push so I can continue in my other account.
+```
+
 ## Session log
 
 - 2026-10-04: Created the repo and linked it to the local folder. Wrote the README (brief summary, checklist, AI-use and hours logs). Compared prototype tool options (see Decisions). Added this handoff file.
