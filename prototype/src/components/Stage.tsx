@@ -66,7 +66,7 @@ export function Stage({ phase, step, reduced, onAdvance }: StageProps) {
           </motion.div>
         </div>
 
-        <div className="stage-copy">
+        <motion.div className="stage-copy" initial={false} animate={{ opacity: noteStage ? 0 : 1 }} transition={{ duration: 0.3 }}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.h1
               key={bloomed ? 'from' : 'got'}
@@ -82,7 +82,7 @@ export function Stage({ phase, step, reduced, onAdvance }: StageProps) {
           <motion.p className="from-line" initial={false} animate={{ opacity: opening ? 0 : 1 }}>
             <img src={SENDER.avatar} alt="" /> from <strong>{SENDER.name}</strong>
           </motion.p>
-        </div>
+        </motion.div>
       </motion.div>
 
       <div className="bottom">

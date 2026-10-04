@@ -461,7 +461,10 @@ img {
 }
 .overlay-center {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
+  overflow: hidden;
   padding-top: calc(24px + env(safe-area-inset-top));
 }
 .overlay-center > * {
