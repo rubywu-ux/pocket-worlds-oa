@@ -42,6 +42,7 @@ Hard requirements:
 
 ## Working conventions
 
+- **Commit and push often.** Do it after every meaningful step (a new concept sketch, a working interaction, a fix, a README/log update), not just at the end of a session, so nothing is lost if Ruby has to switch Claude accounts mid-task. Keep commits small with clear messages. Pull before starting work.
 - Ruby directs and makes the design calls. Ask before structural decisions, and record in the README's AI-use log where she changed or overruled AI output.
 - Local copy: on Ruby's Mac, in iCloud Drive › Ruby Workspace › Pocket Worlds (a clone of this repo).
 - Git in that folder needs file-deletion permission, because git removes its own lock files. If a commit leaves `.git/*.lock` or `tmp_obj_*` files behind, remove them.
