@@ -197,9 +197,8 @@ img {
 }
 .from-line img,
 .note-heading img {
-  border-radius: 50%;
+  border-radius: 26%;
   object-fit: cover;
-  background: #c9c9c9;
   border: 2px solid var(--primary);
   box-shadow: 0 0 0 3px rgba(112, 229, 29, 0.18), 0 4px 10px rgba(0, 0, 0, 0.35);
 }
