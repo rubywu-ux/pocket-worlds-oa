@@ -8,7 +8,7 @@
   --row: rgba(48, 55, 48, 0.9);
   --note: rgba(185, 240, 145, 0.95);
   --font-display: 'Passion One', 'Arial Rounded MT Bold', system-ui, sans-serif;
-  --font-ui: 'Parkinsans', system-ui, -apple-system, sans-serif;
+  --font-ui: 'Parkinsans Variable', 'Parkinsans', system-ui, -apple-system, sans-serif;
 
   /* Responsive sizes: scale with the viewport, capped for big screens */
   --gift: clamp(220px, min(66vw, 42dvh), 440px);
