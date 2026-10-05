@@ -1,36 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { ITEMS, SENDER } from '../../../data'
-import { Gift } from './Gift'
-import { GiftItems } from './GiftItems'
+import { haptic, sfx } from '../../shared/feedback'
 import { Note } from './Note'
+import { Blanket, BOX, TumbleItems } from './PicnicParts'
 import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
 
 type OpenViewProps = {
-  /** True when Sage skipped the animation: the box still pops open, just quickly. */
   skipped: boolean
   onReplay: () => void
   onClose: () => void
 }
 
-/** The opened gift: what's inside, Irene's note (with its sticker), and ways to reply. */
+/**
+ * Variation 2's opened state: the picnic, laid out. The emptied box is closed again (its formal state)
+ * with the gifts resting beside it on the blanket; Irene's note and the replies below.
+ */
 export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null)
-  // The gift arrives open (gifts inside), then goes back to its closed, formal state. After a skip it's already closed.
-  const [closed, setClosed] = useState(skipped)
-  useEffect(() => {
-    if (skipped) return
-    const t = window.setTimeout(() => setClosed(true), 1000)
-    return () => window.clearTimeout(t)
-  }, [skipped])
   const timer = useRef<number | undefined>(undefined)
-
   const show = (msg: string) => {
     window.clearTimeout(timer.current)
     setToast({ msg, id: Date.now() })
     timer.current = window.setTimeout(() => setToast(null), 2800)
   }
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+  useEffect(() => {
+    const t = [window.setTimeout(() => sfx.thud(2), 200), window.setTimeout(() => haptic.tick(), 220)]
+    if (skipped) t.push(window.setTimeout(() => sfx.ding(), 80))
+    return () => {
+      t.forEach(clearTimeout)
+      window.clearTimeout(timer.current)
+    }
+  }, [skipped])
 
   return (
     <motion.section
@@ -51,16 +52,31 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
 
       <div className="open-layout">
         <div className="open-hero">
-          <div className="gift-area gift-area--sm">
-            <Gift
-              layoutId="gift"
-              mode={closed ? 'closed' : 'open'}
-              closeInstantly={skipped}
-              onActivate={onReplay}
-              label="Replay the gift opening"
+          <div
+            className="gift-area gift-area--sm phero"
+            role="button"
+            tabIndex={0}
+            aria-label="Replay the gift opening"
+            onClick={onReplay}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.stopPropagation()
+                onReplay()
+              }
+            }}
+          >
+            <Blanket className="blanket-wrap--sm" />
+            <motion.div
+              className="pbox"
+              initial={{ y: -16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 16 }}
             >
-              {!closed && <GiftItems instant />}
-            </Gift>
+              <span className="pbox-shadow" />
+              <img src={BOX.lid} className="box-img" alt="" draggable={false} />
+            </motion.div>
+            <TumbleItems size={0} instant />
           </div>
           <motion.h1
             className="title"
@@ -71,7 +87,7 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
             A gift from {SENDER.name}!
           </motion.h1>
           <motion.p className="replay-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-            Tap the gift to open it again
+            Tap the picnic to open it again
           </motion.p>
         </div>
 
@@ -84,9 +100,9 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
               <li key={it.id} className="item-row">
                 <motion.div
                   className="item-row-art"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: [0, 1.25, 0.92, 1] }}
-                  transition={{ duration: 0.6, delay: 0.25 + i * 0.1, ease: 'easeOut' }}
+                  initial={{ y: -14, opacity: 0 }}
+                  animate={{ y: [-14, 0, -4, 0], opacity: 1 }}
+                  transition={{ duration: 0.55, delay: 0.25 + i * 0.1, ease: 'easeOut' }}
                 >
                   <img src={it.img} alt="" draggable={false} />
                 </motion.div>
@@ -134,4 +150,3 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
     </motion.section>
   )
 }
-

@@ -1079,3 +1079,332 @@ img {
   letter-spacing: 0.04em;
   pointer-events: none;
 }
+
+/* =====================================================================
+   Variation 2 · "Pull the ribbon" (drag physics on a picnic blanket)
+   ===================================================================== */
+.pstage {
+  overflow: hidden;
+}
+/* The Picnic Gift Shop banner: same art, elliptical bottom edge, dark fade, title on top */
+.pbanner {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 640px);
+  height: clamp(200px, 31dvh, 320px);
+  overflow: hidden;
+  border-radius: 0 0 50% 50% / 0 0 20% 20%;
+  box-shadow: 0 1px 0 rgba(240, 245, 240, 0.08);
+}
+.pbanner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.pbanner-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(30, 35, 30, 0) 30%, rgba(30, 35, 30, 0.85) 100%);
+}
+.pbanner-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(16px, 4dvh, 34px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+.pbanner-title {
+  font-size: clamp(34px, calc(22px + 4vw), 52px);
+}
+.pbanner-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(240, 245, 240, 0.85);
+}
+.pbanner-row img {
+  width: 24px;
+  height: 24px;
+  border-radius: 26%;
+  object-fit: cover;
+  border: 1.5px solid var(--primary);
+}
+
+.pscene {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: clamp(200px, 31dvh, 320px);
+  bottom: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pgift {
+  position: relative;
+}
+
+/* Gingham picnic blanket, in perspective, fading into the dark */
+.blanket-wrap {
+  position: absolute;
+  left: -80%;
+  width: 260%;
+  top: 46%;
+  height: 120%;
+  z-index: 0;
+  perspective: 520px;
+  pointer-events: none;
+}
+.blanket {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(57deg);
+  transform-origin: 50% 0;
+  background-color: #f3d5dc;
+  background-image:
+    linear-gradient(90deg, rgba(226, 104, 140, 0.45) 50%, transparent 50%),
+    linear-gradient(rgba(226, 104, 140, 0.45) 50%, transparent 50%);
+  background-size: 44px 44px;
+  filter: brightness(0.78) saturate(1.05);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 45%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 45%, #000 50%, transparent 100%);
+}
+.blanket-wrap--sm {
+  top: 50%;
+}
+.blanket-wrap--sm .blanket {
+  background-size: 28px 28px;
+}
+
+.pbox {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform-origin: 50% 92%;
+}
+.pbox-open,
+.pbox-lid {
+  position: absolute;
+  inset: 0;
+}
+.pbox-lid {
+  z-index: 3;
+}
+.pbox-shadow {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 82%;
+  height: 18%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(50, 8, 24, 0.5), transparent);
+}
+
+/* Gifts that tumble out and land on the blanket */
+.tumble {
+  position: absolute;
+  z-index: 4;
+  aspect-ratio: 1;
+}
+.tumble-body {
+  position: absolute;
+  inset: 0;
+}
+.tumble-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
+}
+.tumble-shadow {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+  height: 14%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(60, 10, 30, 0.55), transparent);
+}
+
+/* The ribbon tying the envelope to the box */
+.ribbon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  overflow: visible;
+  pointer-events: none;
+}
+.penv {
+  position: absolute;
+  z-index: 6;
+}
+.penv-drag {
+  position: relative;
+  touch-action: none;
+}
+.penv-drag--on {
+  cursor: grab;
+}
+.penv-drag--on:active {
+  cursor: grabbing;
+}
+.penv-img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+.pletter {
+  position: absolute;
+  z-index: 0;
+  left: 14%;
+  top: 4%;
+  width: 72%;
+  touch-action: none;
+  cursor: grab;
+}
+.pletter .letter-inner {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* "Snap!" */
+.snap {
+  position: absolute;
+  z-index: 7;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.snap-bit {
+  position: absolute;
+  width: 12px;
+  height: 6px;
+  margin: -3px 0 0 -6px;
+  border-radius: 2px;
+  background: #ffd95a;
+  box-shadow: inset 0 -2px 0 #d9951c;
+}
+.snap-word {
+  position: absolute;
+  left: -60px;
+  top: -24px;
+  width: 120px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1;
+  color: #ffd95a;
+  -webkit-text-stroke: 1.5px #7a4a08;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.6);
+}
+
+.tap-hint svg {
+  color: var(--primary);
+}
+.pull-up {
+  display: inline-block;
+  color: var(--primary);
+  font-weight: 800;
+  animation: nudge-up 1.2s ease-in-out infinite;
+}
+@keyframes nudge-up {
+  0%,
+  100% {
+    transform: translateY(2px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Reading: the letter flips over like a card */
+.overlay--split {
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.overlay-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 15, 12, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.overlay--split > .overlay-center {
+  position: relative;
+  z-index: 1;
+}
+.flip {
+  position: relative;
+  z-index: 1;
+  perspective: 1200px;
+}
+.flip-heading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  justify-content: center;
+  margin-bottom: clamp(30px, 8vw, 50px);
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-face--back {
+  transform: rotateY(180deg);
+}
+
+/* Open view hero: the picnic, laid out */
+.phero {
+  cursor: pointer;
+  outline: none;
+  border-radius: 20px;
+}
+.phero:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 6px;
+}
+
+@media (max-height: 700px) {
+  .pbanner,
+  .pscene {
+    --bh: clamp(170px, 28dvh, 260px);
+  }
+  .pbanner {
+    height: var(--bh);
+  }
+  .pscene {
+    top: var(--bh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pull-up {
+    animation: none;
+  }
+}

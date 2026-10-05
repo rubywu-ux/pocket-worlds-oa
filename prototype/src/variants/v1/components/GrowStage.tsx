@@ -43,6 +43,7 @@ export function GrowStage({ onDone }: { onDone: (skipped: boolean) => void }) {
   const water = useRef<{ stop(): void } | null>(null)
   const pressedAt = useRef(0)
   const bloomedAt = useRef(0)
+  const skipArmed = useRef(false)
   const timers = useRef<number[]>([])
   const later = (fn: () => void, ms: number) => timers.current.push(window.setTimeout(fn, ms))
   useEffect(
@@ -178,16 +179,14 @@ export function GrowStage({ onDone }: { onDone: (skipped: boolean) => void }) {
   return (
     <motion.section
       className="view stage grow-stage"
-      onClick={
-        mode === 'bloom'
-          ? () => {
-              // the finger that finished the hold lifts right after the bloom: that's not a skip
-              if (performance.now() - bloomedAt.current > 700) onDone(true)
-            }
-          : mode === 'tag'
-            ? openTag
-            : undefined
-      }
+      // Skip only on a fresh tap during the bloom: the finger that finished the hold lifting is not a skip.
+      onPointerDown={() => {
+        skipArmed.current = modeRef.current === 'bloom'
+      }}
+      onClick={() => {
+        if (modeRef.current === 'bloom' && skipArmed.current) onDone(true)
+        else if (modeRef.current === 'tag') openTag()
+      }}
       exit={{ opacity: 0, transition: { duration: 0.3 } }}
     >
       <AnimatePresence>{mode !== 'read' && <SkipButton key="skip" onSkip={() => onDone(true)} />}</AnimatePresence>

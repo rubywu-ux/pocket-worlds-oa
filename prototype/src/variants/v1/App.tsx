@@ -37,7 +37,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <main className="app app--v1" data-phase={phase}>
         <div className="variant-tag" aria-hidden>
-          Variation 1 · Grow it
+          V1 · Grow it
         </div>
         <SoundToggle />
         <LayoutGroup>
