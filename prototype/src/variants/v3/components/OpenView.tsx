@@ -1,28 +1,58 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
-import { ITEMS, SENDER } from '../../../data'
-import { Gift } from './Gift'
-import { GiftItems } from './GiftItems'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { ART, ITEMS, SENDER } from '../../../data'
+import { haptic, sfx } from '../../shared/feedback'
 import { Note } from './Note'
+import { OfferCell } from './RewardParts'
 import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
 
 type OpenViewProps = {
-  /** True when Sage skipped the animation: the box still pops open, just quickly. */
   skipped: boolean
   onReplay: () => void
   onClose: () => void
 }
 
-/** The opened gift: what's inside, Irene's note (with its sticker), and ways to reply. */
+type Reaction = { id: string; label: string; icon: ReactNode }
+const REACTIONS: Reaction[] = [
+  {
+    id: 'love',
+    label: 'Love it!',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden>
+        <path
+          d="M7 3C4.239 3 2 5.216 2 7.95c0 2.207.875 7.445 9.488 12.74a.985.985 0 0 0 1.024 0C21.125 15.395 22 10.157 22 7.95C22 5.216 19.761 3 17 3s-5 3-5 3s-2.239-3-5-3Z"
+          fill="#ff5fa8"
+          stroke="#fff"
+          strokeWidth="1.4"
+        />
+      </svg>
+    ),
+  },
+  {
+    id: 'thanks',
+    label: 'Thank you!',
+    icon: (
+      <svg viewBox="-12 -12 24 24" aria-hidden>
+        {[0, 72, 144, 216, 288].map((a) => (
+          <ellipse key={a} cx="0" cy="-6" rx="4.6" ry="6.4" transform={`rotate(${a})`} fill="#ffe486" stroke="#e3a524" strokeWidth="1" />
+        ))}
+        <circle r="3.8" fill="#ff8cc6" stroke="#d93a86" strokeWidth="1" />
+      </svg>
+    ),
+  },
+  { id: 'yum', label: 'Yum!', icon: <img src={ART.sticker} alt="" draggable={false} /> },
+]
+
+/**
+ * Variation 3's opened state. The gifts are already in storage, so this screen is about Irene:
+ * her note, and a one-tap way to say thanks (a sticker reaction that flies to her), plus the replies.
+ */
 export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null)
-  // The gift arrives open (gifts inside), then goes back to its closed, formal state. After a skip it's already closed.
-  const [closed, setClosed] = useState(skipped)
-  useEffect(() => {
-    if (skipped) return
-    const t = window.setTimeout(() => setClosed(true), 1000)
-    return () => window.clearTimeout(t)
-  }, [skipped])
+  const [sent, setSent] = useState<string[]>([])
+  const [flights, setFlights] = useState<{ key: number; r: Reaction; from: DOMRect; to: DOMRect }[]>([])
+  const [bump, setBump] = useState(0)
+  const avatarRef = useRef<HTMLImageElement | null>(null)
   const timer = useRef<number | undefined>(undefined)
 
   const show = (msg: string) => {
@@ -30,7 +60,29 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
     setToast({ msg, id: Date.now() })
     timer.current = window.setTimeout(() => setToast(null), 2800)
   }
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+  useEffect(() => {
+    const t: number[] = []
+    if (skipped) t.push(window.setTimeout(() => sfx.ding(), 80))
+    return () => {
+      t.forEach(clearTimeout)
+      window.clearTimeout(timer.current)
+    }
+  }, [skipped])
+
+  const react = (r: Reaction, btn: HTMLElement) => {
+    const to = avatarRef.current?.getBoundingClientRect()
+    if (!to) return
+    sfx.pop(4)
+    haptic.light()
+    setFlights((f) => [...f, { key: Date.now() + Math.random(), r, from: btn.getBoundingClientRect(), to }])
+    window.setTimeout(() => {
+      setBump((b) => b + 1)
+      setSent((s) => (s.includes(r.id) ? s : [...s, r.id]))
+      sfx.ding()
+      haptic.success()
+      show(`Sent “${r.label}” to ${SENDER.name}`)
+    }, 560)
+  }
 
   return (
     <motion.section
@@ -51,17 +103,44 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
 
       <div className="open-layout">
         <div className="open-hero">
-          <div className="gift-area gift-area--sm">
-            <Gift
-              layoutId="gift"
-              mode={closed ? 'closed' : 'open'}
-              closeInstantly={skipped}
-              onActivate={onReplay}
-              label="Replay the gift opening"
+          <motion.div
+            className="rhero"
+            role="button"
+            tabIndex={0}
+            aria-label="Replay the gift opening"
+            onClick={onReplay}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.stopPropagation()
+                onReplay()
+              }
+            }}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 20 }}
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <OfferCell
+              className="offer--gift"
+              art={<img src={ART.giftBox} alt="" draggable={false} />}
+              name="A gift for Sage"
+              tab={
+                <>
+                  <img src={SENDER.avatar} alt="" className="offer-tab-avatar" /> {SENDER.name}
+                </>
+              }
+            />
+            <motion.span
+              className="collected"
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: -8 }}
+              transition={{ delay: 0.35, type: 'spring', stiffness: 500, damping: 14 }}
             >
-              {!closed && <GiftItems instant />}
-            </Gift>
-          </div>
+              ✓ Collected
+            </motion.span>
+          </motion.div>
           <motion.h1
             className="title"
             initial={{ opacity: 0, y: 10 }}
@@ -70,14 +149,11 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
           >
             A gift from {SENDER.name}!
           </motion.h1>
-          <motion.p className="replay-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-            Tap the gift to open it again
-          </motion.p>
         </div>
 
         <div className="open-details">
           <motion.h2 className="section-title" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
-            in your gift
+            in your storage
           </motion.h2>
           <ul className="item-list">
             {ITEMS.map((it, i) => (
@@ -86,33 +162,59 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
                   className="item-row-art"
                   initial={{ scale: 0 }}
                   animate={{ scale: [0, 1.25, 0.92, 1] }}
-                  transition={{ duration: 0.6, delay: 0.25 + i * 0.1, ease: 'easeOut' }}
+                  transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: 'easeOut' }}
                 >
                   <img src={it.img} alt="" draggable={false} />
                 </motion.div>
-                <motion.div
-                  className="item-row-text"
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.22 + i * 0.08 }}
-                >
+                <div className="item-row-text">
                   <span className="item-row-name">{it.name}</span>
                   <span className="item-row-sub">Ready to place in your garden</span>
-                </motion.div>
-                <motion.span
-                  className="qty"
-                  initial={{ scale: 0.6, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3 + i * 0.08, type: 'spring', stiffness: 500, damping: 20 }}
-                  aria-label={`quantity ${it.qty}`}
-                >
+                </div>
+                <span className="qty" aria-label={`quantity ${it.qty}`}>
                   ×{it.qty}
-                </motion.span>
+                </span>
               </li>
             ))}
           </ul>
 
-          <Note layoutId="note" className="note--card" fold="open" sticker={skipped ? 'slap' : 'on'} />
+          <Note layoutId="note" className="note--card" fold="open" sticker="on" />
+
+          {/* Say thanks: one-tap sticker reactions that fly to Irene */}
+          <motion.div className="thanks" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <motion.img
+              key={bump}
+              ref={avatarRef}
+              src={SENDER.avatar}
+              alt=""
+              className="thanks-avatar"
+              initial={{ scale: bump ? 1.3 : 1 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 10 }}
+            />
+            <div className="thanks-copy">
+              <span className="thanks-title">Say thanks</span>
+              <span className="thanks-sub">{sent.length ? `${SENDER.name} will see your reaction` : `Send ${SENDER.name} a sticker`}</span>
+            </div>
+            <div className="thanks-btns">
+              {REACTIONS.map((r) => (
+                <motion.button
+                  key={r.id}
+                  type="button"
+                  className={`react${sent.includes(r.id) ? ' react--sent' : ''}`}
+                  aria-label={`Send “${r.label}” to ${SENDER.name}`}
+                  title={r.label}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    react(r, e.currentTarget)
+                  }}
+                  whileTap={{ scale: 0.85 }}
+                  whileHover={{ y: -2 }}
+                >
+                  {r.icon}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
 
           <motion.div
             className="actions"
@@ -130,8 +232,29 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
         </div>
       </div>
 
+      {/* reactions in flight */}
+      <AnimatePresence>
+        {flights.map((f) => (
+          <motion.span
+            key={f.key}
+            className="react-fly"
+            style={{ left: f.from.left, top: f.from.top, width: f.from.width, height: f.from.height }}
+            initial={{ x: 0, y: 0, scale: 1 }}
+            animate={{
+              x: [0, (f.to.left - f.from.left) * 0.5, f.to.left + f.to.width / 2 - (f.from.left + f.from.width / 2)],
+              y: [0, -60, f.to.top + f.to.height / 2 - (f.from.top + f.from.height / 2)],
+              scale: [1, 1.5, 0.4],
+              opacity: [1, 1, 0],
+            }}
+            transition={{ duration: 0.56, ease: 'easeInOut' }}
+            onAnimationComplete={() => setFlights((all) => all.filter((x) => x.key !== f.key))}
+          >
+            {f.r.icon}
+          </motion.span>
+        ))}
+      </AnimatePresence>
+
       <Toast message={toast?.msg ?? null} id={toast?.id ?? 0} />
     </motion.section>
   )
 }
-

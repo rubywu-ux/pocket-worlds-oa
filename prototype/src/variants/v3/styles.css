@@ -1079,3 +1079,491 @@ img {
   letter-spacing: 0.04em;
   pointer-events: none;
 }
+
+/* =====================================================================
+   Variation 3 · "Reward reveal" (fast, game-style reward cards)
+   ===================================================================== */
+.rstage-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3.6dvh, 40px);
+  padding: 40px 20px 110px;
+}
+.rarea {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+.rarea > * {
+  grid-area: 1 / 1;
+}
+.rays--stage {
+  left: 50%;
+  top: 46%;
+  width: 150vmax;
+  height: 150vmax;
+  margin: -75vmax 0 0 -75vmax;
+}
+
+/* Offer Cell (Picnic Gift Shop) */
+.offer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.offer-display {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px 8px;
+  background: #262c26;
+  border: 1px solid #303730;
+  border-radius: 32px 32px 24px 24px;
+}
+.offer-art {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.offer-art > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+}
+.offer-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+  letter-spacing: 0.24px;
+  color: #647064;
+  text-align: center;
+}
+.offer-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: -48px;
+  padding: 54px 8px 8px;
+  background: #303730;
+  border-radius: 0 0 24px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--n50);
+}
+.offer-tab-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 26%;
+  object-fit: cover;
+  border: 1.5px solid var(--primary);
+}
+.offer--gift .offer-display {
+  padding: 8px 16px 10px;
+  border-radius: 40px 40px 28px 28px;
+}
+.offer--gift .offer-name {
+  min-height: 18px;
+  font-size: 13px;
+}
+.offer--gift .offer-tab {
+  font-size: 18px;
+  border-radius: 0 0 28px 28px;
+}
+
+/* The unopened gift card */
+.rgift {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  z-index: 2;
+}
+.rgift:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 6px;
+  border-radius: 40px;
+}
+.rgift-glow {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 95, 168, 0.45), rgba(255, 95, 168, 0.1) 60%, transparent);
+  animation: glow-pulse 2.6s ease-in-out infinite;
+}
+.rgift-glow--hot {
+  background: radial-gradient(closest-side, rgba(255, 246, 210, 0.9), rgba(255, 140, 198, 0.4) 50%, transparent);
+  animation-duration: 0.3s;
+}
+@keyframes glow-pulse {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.7;
+  }
+}
+.offer-shine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 72%;
+  z-index: 2;
+  border-radius: 40px 40px 0 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.16) 50%, transparent 60%);
+  background-size: 260% 100%;
+  animation: shine 3.4s ease-in-out infinite;
+}
+@keyframes shine {
+  0% {
+    background-position: 140% 0;
+  }
+  55%,
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+/* Confetti in the banner's motifs */
+.confetti-origin {
+  position: relative;
+  width: 0;
+  height: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+.confetti {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.cf {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+}
+.cf--heart {
+  clip-path: path('M6 11.5C6 11.5 0 7.4 0 3.6C0 1.6 1.5 0 3.3 0C4.6 0 5.6.8 6 1.9C6.4.8 7.4 0 8.7 0C10.5 0 12 1.6 12 3.6C12 7.4 6 11.5 6 11.5Z');
+}
+.cf--spark {
+  width: 14px;
+  height: 14px;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+}
+.cf--petal {
+  width: 9px;
+  height: 13px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+.cf--dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+/* Reward cards */
+.rrow {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.rcard {
+  position: relative;
+  perspective: 900px;
+  outline: none;
+}
+.rcard[role='button'] {
+  cursor: pointer;
+}
+.rcard:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 4px;
+  border-radius: 28px;
+}
+.rcard-flip {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+.rcard-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rcard-face--back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+.rcard-glow {
+  position: absolute;
+  inset: -22%;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 140, 198, 0.55), rgba(255, 217, 90, 0.16) 60%, transparent);
+}
+.rcard-glow--note {
+  background: radial-gradient(closest-side, rgba(112, 229, 29, 0.5), rgba(185, 240, 145, 0.14) 60%, transparent);
+}
+.card-back {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 32px 32px 24px 24px;
+  border: 1px solid #3d473d;
+  background:
+    repeating-linear-gradient(45deg, rgba(112, 229, 29, 0.06) 0 6px, transparent 6px 14px),
+    linear-gradient(160deg, #303a30, #1b201b);
+  box-shadow:
+    inset 0 0 0 5px #262c26,
+    inset 0 0 0 6px rgba(112, 229, 29, 0.25),
+    0 10px 24px rgba(0, 0, 0, 0.4);
+}
+.card-back-shine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 40%;
+  background: linear-gradient(rgba(255, 255, 255, 0.08), transparent);
+}
+.card-back-emblem {
+  display: grid;
+  place-items: center;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--n900);
+  box-shadow:
+    0 0 0 4px rgba(112, 229, 29, 0.2),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.card-back-emblem svg {
+  width: 56%;
+  height: 56%;
+}
+.mini-note {
+  position: relative;
+  width: 88%;
+  height: 66%;
+  border-radius: 8px;
+  background: var(--note);
+  transform: rotate(-6deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.mini-note-to {
+  position: absolute;
+  left: 9%;
+  top: 13%;
+  font-size: 9px;
+  font-weight: 600;
+  color: #1e231e;
+}
+.mini-note-line {
+  position: absolute;
+  left: 9%;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.mini-note-sticker {
+  position: absolute;
+  right: -14%;
+  top: -22%;
+  width: 46%;
+  transform: rotate(12deg);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+.offer-tab--note {
+  color: var(--primary);
+}
+.offer-tab--pulse {
+  animation: tab-pulse 1.4s ease-in-out infinite;
+}
+@keyframes tab-pulse {
+  50% {
+    color: #f0ffe0;
+    text-shadow: 0 0 10px rgba(112, 229, 29, 0.9);
+  }
+}
+.rcollect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.rcollect .tap-hint {
+  padding-bottom: 0;
+}
+
+/* Garden storage */
+.bag {
+  position: fixed;
+  top: calc(8px + env(safe-area-inset-top));
+  left: 14px;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(21, 25, 21, 0.75);
+  border: 1px solid rgba(240, 245, 240, 0.16);
+}
+.bag-icon,
+.bag-icon svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+.bag-count {
+  position: absolute;
+  right: -8px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: var(--n900);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Reading overlay */
+.rread {
+  position: relative;
+  z-index: 1;
+}
+.rread-heading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  justify-content: center;
+  margin-bottom: clamp(40px, 11vw, 64px);
+}
+
+/* Open view */
+.rhero {
+  position: relative;
+  width: clamp(130px, 34vw, 190px);
+  cursor: pointer;
+  outline: none;
+}
+.rhero:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 6px;
+  border-radius: 40px;
+}
+.collected {
+  position: absolute;
+  right: -16px;
+  top: 6px;
+  z-index: 3;
+  padding: 5px 10px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: var(--n900);
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+.thanks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--row);
+}
+.thanks-avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 26%;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+}
+.thanks-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.thanks-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+.thanks-sub {
+  font-size: 12px;
+  color: var(--n400);
+}
+.thanks-btns {
+  display: flex;
+  gap: 6px;
+}
+.react {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--n900);
+  border: 1px solid rgba(240, 245, 240, 0.14);
+}
+.react svg,
+.react img,
+.react-fly svg,
+.react-fly img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.react--sent {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(112, 229, 29, 0.2);
+}
+.react-fly {
+  position: fixed;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rgift-glow,
+  .offer-shine,
+  .offer-tab--pulse {
+    animation: none;
+  }
+}
