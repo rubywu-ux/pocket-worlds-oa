@@ -29,7 +29,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 ## 3. After opening
 
 - The note lives **underneath the gift box**, which is revealed with the listed items.
-- **Updated 2026-10-04:** after reading, the note goes back to its **closed, formal state** (the "from: Irene / sending to: Sage" letter). Tapping it re-opens the note.
+- **Updated 2026-10-04:** after opening, the **gift box goes back to its closed, formal state** (the lid comes back on), with the opened items listed and the note underneath.
 - The note carries the **1 sticker** chosen during customization. The sticker **rocks subtly**, as if to say "I'm here, I'm a cute sticker on your note!"
 - Buttons: **Send a gift back** and **Visit Irene's garden**.
 - An **exit/close** button.

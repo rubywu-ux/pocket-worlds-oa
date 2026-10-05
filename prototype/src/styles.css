@@ -293,6 +293,18 @@ img {
   inset: 0;
   z-index: 4;
 }
+.gift-sublayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 50% 60%;
+}
+.gift-sublayer--leaves {
+  z-index: 1;
+}
+.gift-sublayer--bloom {
+  z-index: 3;
+}
 .box-img {
   position: absolute;
   left: 0;

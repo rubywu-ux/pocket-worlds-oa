@@ -1,7 +1,6 @@
 import { motion } from 'motion/react'
 import { SENDER } from '../data'
 import { Gift } from './Gift'
-import { GiftItems } from './GiftItems'
 import { Button } from './ui'
 
 /** What Sage sees after closing: the gift is tucked into the garden. Lets reviewers start over. */
@@ -15,9 +14,7 @@ export function ClosedView({ onRestart }: { onRestart: () => void }) {
     >
       <div className="closed-inner">
         <div className="gift-area gift-area--xs">
-          <Gift layoutId="gift" mode="open">
-            <GiftItems instant />
-          </Gift>
+          <Gift layoutId="gift" mode="closed" closeInstantly />
         </div>
         <h1 className="title title--sm">All caught up!</h1>
         <p className="closed-copy">{SENDER.name}'s gift is waiting in your garden.</p>

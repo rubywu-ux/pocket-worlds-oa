@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { ITEMS, SENDER } from '../data'
 import { Gift } from './Gift'
 import { GiftItems } from './GiftItems'
-import { Letter } from './Letter'
 import { Note } from './Note'
 import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
 
@@ -17,6 +16,13 @@ type OpenViewProps = {
 /** The opened gift: what's inside, Irene's note (with its sticker), and ways to reply. */
 export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null)
+  // The gift arrives open (gifts inside), then goes back to its closed, formal state. After a skip it's already closed.
+  const [closed, setClosed] = useState(skipped)
+  useEffect(() => {
+    if (skipped) return
+    const t = window.setTimeout(() => setClosed(true), 1000)
+    return () => window.clearTimeout(t)
+  }, [skipped])
   const timer = useRef<number | undefined>(undefined)
 
   const show = (msg: string) => {
@@ -46,8 +52,14 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
       <div className="open-layout">
         <div className="open-hero">
           <div className="gift-area gift-area--sm">
-            <Gift layoutId="gift" mode="open" enterFromClosed={skipped} onActivate={onReplay} label="Replay the gift opening">
-              <GiftItems instant={!skipped} />
+            <Gift
+              layoutId="gift"
+              mode={closed ? 'closed' : 'open'}
+              closeInstantly={skipped}
+              onActivate={onReplay}
+              label="Replay the gift opening"
+            >
+              {!closed && <GiftItems instant />}
             </Gift>
           </div>
           <motion.h1
@@ -59,7 +71,7 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
             A gift from {SENDER.name}!
           </motion.h1>
           <motion.p className="replay-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-            Tap the gift to watch it bloom again
+            Tap the gift to open it again
           </motion.p>
         </div>
 
@@ -100,7 +112,7 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
             ))}
           </ul>
 
-          <NoteCard cameFromReading={!skipped} />
+          <Note layoutId="note" className="note--card" fold="open" sticker={skipped ? 'slap' : 'on'} />
 
           <motion.div
             className="actions"
@@ -123,54 +135,3 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
   )
 }
 
-/**
- * Irene's note under the gift. After Sage reads it, it folds back into its closed, formal state:
- * the "from: Irene / sending to: Sage" letter (with the sticker). Tap to switch between the two.
- */
-function NoteCard({ cameFromReading }: { cameFromReading: boolean }) {
-  const [open, setOpen] = useState(cameFromReading)
-  useEffect(() => {
-    if (!cameFromReading) return
-    const t = window.setTimeout(() => setOpen(false), 1100)
-    return () => window.clearTimeout(t)
-  }, [cameFromReading])
-
-  const fade = {
-    initial: { opacity: 0, scale: 0.96, filter: 'blur(5px)' },
-    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-    exit: { opacity: 0, scale: 1.03, filter: 'blur(5px)' },
-    transition: { duration: 0.35, ease: 'easeOut' as const },
-  }
-
-  return (
-    <div className="note-card">
-      <div
-        className="note-card-tap"
-        role="button"
-        tabIndex={0}
-        aria-label={open ? 'Fold the note back into the letter' : `Read ${SENDER.name}'s note`}
-        onClick={(e) => {
-          e.stopPropagation()
-          setOpen((o) => !o)
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            setOpen((o) => !o)
-          }
-        }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <Note key="note" layoutId="note" className="note--card" fold="open" sticker="on" {...fade} />
-          ) : (
-            <motion.div key="letter" {...fade}>
-              <Letter withSticker />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      <p className="note-card-hint">{open ? 'Tap to fold it back up' : `Tap to read ${SENDER.name}'s note`}</p>
-    </div>
-  )
-}

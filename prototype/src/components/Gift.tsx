@@ -1,5 +1,5 @@
 import { useId, type KeyboardEvent, type ReactNode } from 'react'
-import { motion, type TargetAndTransition, type Transition } from 'motion/react'
+import { AnimatePresence, motion, type TargetAndTransition, type Transition } from 'motion/react'
 import { ART } from '../data'
 
 /**
@@ -7,12 +7,13 @@ import { ART } from '../data'
  * idle   → floats, glows, and gives a little "tap me" wiggle now and then
  * wiggle → anticipation: squash and shake; the lid jiggles as a sprout pushes up from inside
  * bloom  → the lid pops off and flies away; flowers grow out of the open box and the gifts pop out
- * open   → resting, opened state (used in the final layout)
+ * open   → resting, opened state with the gifts inside
+ * closed → back to its closed, formal state: the lid drops back on (final layout)
  *
  * Layers, back to front: glow/rays · leaves · open box (inside) · flowers · gifts · box front wall · sprout · lid.
  * The open box art is generated from the lid's own silhouette (prototype/tools/make-box-base.py).
  */
-export type GiftMode = 'idle' | 'wiggle' | 'bloom' | 'open'
+export type GiftMode = 'idle' | 'wiggle' | 'bloom' | 'open' | 'closed'
 
 type GiftProps = {
   mode: GiftMode
@@ -23,6 +24,8 @@ type GiftProps = {
   enterFromClosed?: boolean
   /** Gifts popping out of the box: rendered between the inside of the box and its front wall. */
   children?: ReactNode
+  /** In the closed state, appear already closed (no lid drop). */
+  closeInstantly?: boolean
 }
 
 const BOX: Record<GiftMode, TargetAndTransition> = {
@@ -35,6 +38,7 @@ const BOX: Record<GiftMode, TargetAndTransition> = {
   },
   bloom: { scaleX: [1.08, 0.93, 1.03, 1], scaleY: [0.88, 1.12, 0.97, 1], rotate: 0, y: '6%' },
   open: { scaleX: 1, scaleY: 1, rotate: 0, y: '6%' },
+  closed: { scaleX: 1, scaleY: 1, rotate: 0, y: '0%' },
 }
 /** The lid jiggles as pressure builds, then pops off and spins away. */
 const LID_WIGGLE: TargetAndTransition = {
@@ -54,22 +58,28 @@ const BOX_T: Record<GiftMode, Transition> = {
   wiggle: { duration: 1.15, ease: 'easeInOut', times: [0, 0.1, 0.2, 0.3, 0.38, 0.5, 0.6, 0.7, 0.8, 0.9, 1] },
   bloom: { duration: 0.7, ease: 'easeOut', y: { type: 'spring', stiffness: 260, damping: 14 } },
   open: { duration: 0.35 },
+  closed: { duration: 0.35 },
 }
+/** The lid drops back onto the box with a soft bounce. */
+const LID_DROP_FROM: TargetAndTransition = { y: '-85%', rotate: -12, scale: 1.05, opacity: 0 }
+const LID_DROP_T: Transition = { type: 'spring', stiffness: 230, damping: 15, delay: 0.1, opacity: { duration: 0.2, delay: 0.1 } }
 
 const GLOW: Record<GiftMode, TargetAndTransition> = {
   idle: { opacity: [0.22, 0.4, 0.22], scale: [0.95, 1.03, 0.95] },
   wiggle: { opacity: 0.75, scale: 1.1 },
   bloom: { opacity: [1, 0.5], scale: [1.5, 1.1] },
   open: { opacity: 0.4, scale: 1 },
+  closed: { opacity: 0.3, scale: 1 },
 }
 const GLOW_T: Record<GiftMode, Transition> = {
   idle: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' },
   wiggle: { duration: 1 },
   bloom: { duration: 1.2, ease: 'easeOut' },
   open: { duration: 0.6 },
+  closed: { duration: 0.6 },
 }
 
-export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = false, children }: GiftProps) {
+export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = false, children, closeInstantly = false }: GiftProps) {
   const bloomed = mode === 'bloom' || mode === 'open'
   // Already-open gifts (final layout) appear bloomed without replaying, unless we got here by skipping.
   const instant = mode === 'open' && !enterFromClosed
@@ -104,44 +114,74 @@ export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = fals
       <div className="gift-layers">
         <motion.div className="gift-glow" initial={false} animate={GLOW[mode]} transition={GLOW_T[mode]} />
 
-        {bloomed && (
-          <motion.div
-            className="rays"
-            initial={instant ? { scale: 1, opacity: 0.85 } : { scale: 0.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.85, rotate: 360 }}
-            transition={{
-              scale: { type: 'spring', stiffness: 120, damping: 14 },
-              opacity: { duration: 0.4 },
-              rotate: { duration: 48, repeat: Infinity, ease: 'linear' },
-            }}
-          />
-        )}
+        {/* Everything that belongs to the opened box tucks away when the lid comes back down */}
+        <AnimatePresence>
+          {bloomed && (
+            <motion.div
+              key="rays"
+              className="rays"
+              initial={instant ? { scale: 1, opacity: 0.85 } : { scale: 0.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 0.85, rotate: 360 }}
+              exit={{ opacity: 0, transition: { duration: 0.4 } }}
+              transition={{
+                scale: { type: 'spring', stiffness: 120, damping: 14 },
+                opacity: { duration: 0.4 },
+                rotate: { duration: 48, repeat: Infinity, ease: 'linear' },
+              }}
+            />
+          )}
+          {bloomed && (
+            <motion.div key="leaves" className="gift-sublayer gift-sublayer--leaves" exit={{ scale: 0.4, opacity: 0, transition: { duration: 0.3 } }}>
+              <BaseLeaves show instant={instant} />
+            </motion.div>
+          )}
 
-        <BaseLeaves show={bloomed} instant={instant} />
-
-        {/* The open box: its inside, then flowers and gifts, then its front wall on top of them */}
-        {bloomed && (
-          <motion.div className="box box--base" initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }} animate={BOX[mode]} transition={BOX_T[mode]}>
-            <img src={ART.boxBase} className="box-img" alt="" draggable={false} />
-          </motion.div>
-        )}
-        {bloomed && <Bloom instant={instant} />}
-        {children && <div className="gift-items">{children}</div>}
-        {bloomed && (
-          <motion.div className="box box--front" initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }} animate={BOX[mode]} transition={BOX_T[mode]}>
-            <img src={ART.boxFront} className="box-img" alt="" draggable={false} />
-          </motion.div>
-        )}
+          {/* The open box: its inside, then flowers and gifts, then its front wall on top of them */}
+          {bloomed && (
+            <motion.div
+              key="base"
+              className="box box--base"
+              initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }}
+              animate={BOX[mode]}
+              exit={{ y: '0%', opacity: 0, transition: { opacity: { delay: 0.45, duration: 0.15 }, y: { duration: 0.3 } } }}
+              transition={BOX_T[mode]}
+            >
+              <img src={ART.boxBase} className="box-img" alt="" draggable={false} />
+            </motion.div>
+          )}
+          {bloomed && (
+            <motion.div key="bloom" className="gift-sublayer gift-sublayer--bloom" exit={{ y: '20%', scale: 0.5, opacity: 0, transition: { duration: 0.3 } }}>
+              <Bloom instant={instant} />
+            </motion.div>
+          )}
+          {children && (
+            <motion.div key="items" className="gift-items" exit={{ y: '12%', opacity: 0, transition: { delay: 0.2, duration: 0.25 } }}>
+              {children}
+            </motion.div>
+          )}
+          {bloomed && (
+            <motion.div
+              key="front"
+              className="box box--front"
+              initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }}
+              animate={BOX[mode]}
+              exit={{ y: '0%', opacity: 0, transition: { opacity: { delay: 0.45, duration: 0.15 }, y: { duration: 0.3 } } }}
+              transition={BOX_T[mode]}
+            >
+              <img src={ART.boxFront} className="box-img" alt="" draggable={false} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {(mode === 'wiggle' || mode === 'bloom') && <Sprout burst={mode === 'bloom'} />}
 
-        {/* The lid (the original closed-box art): shakes, then pops off */}
+        {/* The lid (the original closed-box art): shakes, pops off, and comes back on at the end */}
         {(mode !== 'open' || enterFromClosed) && (
           <motion.div
             className="box box--lid"
-            initial={false}
-            animate={bloomed ? LID_POP : mode === 'wiggle' ? LID_WIGGLE : BOX[mode]}
-            transition={bloomed ? LID_POP_T : BOX_T[mode]}
+            initial={mode === 'closed' && !closeInstantly ? LID_DROP_FROM : false}
+            animate={bloomed ? LID_POP : mode === 'wiggle' ? LID_WIGGLE : { ...BOX[mode], opacity: 1 }}
+            transition={bloomed ? LID_POP_T : mode === 'closed' ? LID_DROP_T : BOX_T[mode]}
           >
             <img src={ART.giftBox} className="box-img" alt="" draggable={false} />
           </motion.div>
