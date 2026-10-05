@@ -332,21 +332,42 @@ img {
   overflow: visible;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
 }
-/* The bloom behind the box: centered on the box (gift area center ≈ 50%, 46%) */
-.flower--halo {
-  left: -12%;
-  top: -18%;
-  width: 124%;
-  height: 124%;
+/* Same flowers and leaves, arranged around the box so it sits centered in front of the bloom:
+   main flower peeks over the top, the side flowers peek out from behind the left and right edges. */
+.flower--main {
+  left: 33%;
+  top: -5%;
+  width: 34%;
+  height: 34%;
   z-index: 2;
 }
-.flower--halo-back {
-  left: -22%;
-  top: -28%;
-  width: 144%;
-  height: 144%;
+.flower--l {
+  left: -9%;
+  top: 30%;
+  width: 28%;
+  height: 28%;
+  z-index: 3;
+}
+.flower--r {
+  left: 82%;
+  top: 29%;
+  width: 26%;
+  height: 26%;
+  z-index: 3;
+}
+.top-leaf {
+  position: absolute;
   z-index: 1;
-  opacity: 0.9;
+  width: 20%;
+  height: 34%;
+  top: 0%;
+  overflow: visible;
+}
+.top-leaf--l {
+  left: 6%;
+}
+.top-leaf--r {
+  left: 74%;
 }
 .base-leaf {
   position: absolute;
