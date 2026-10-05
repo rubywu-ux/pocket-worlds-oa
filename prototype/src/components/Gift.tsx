@@ -1,15 +1,16 @@
-import { useId, type KeyboardEvent } from 'react'
+import { useId, type KeyboardEvent, type ReactNode } from 'react'
 import { motion, type TargetAndTransition, type Transition } from 'motion/react'
 import { ART } from '../data'
 
 /**
- * The sweetheart gift box, treated like a planter.
+ * The sweetheart gift box, unboxed like a planter.
  * idle   → floats, glows, and gives a little "tap me" wiggle now and then
- * wiggle → anticipation: squash and shake while a sprout pushes up out of the box
- * bloom  → the bud bursts: flowers spill out of the top of the box, light rays spin up
- * open   → resting, bloomed state (used in the final layout)
+ * wiggle → anticipation: squash and shake; the lid jiggles as a sprout pushes up from inside
+ * bloom  → the lid pops off and flies away; flowers grow out of the open box and the gifts pop out
+ * open   → resting, opened state (used in the final layout)
  *
- * The heart itself stays whole (splitting a heart reads as heartbreak).
+ * Layers, back to front: glow/rays · leaves · open box (inside) · flowers · gifts · box front wall · sprout · lid.
+ * The open box art is generated from the lid's own silhouette (prototype/tools/make-box-base.py).
  */
 export type GiftMode = 'idle' | 'wiggle' | 'bloom' | 'open'
 
@@ -20,6 +21,8 @@ type GiftProps = {
   label?: string
   /** In the open state, play a quick bloom (used after a skip) instead of appearing already bloomed. */
   enterFromClosed?: boolean
+  /** Gifts popping out of the box: rendered between the inside of the box and its front wall. */
+  children?: ReactNode
 }
 
 const BOX: Record<GiftMode, TargetAndTransition> = {
@@ -30,9 +33,22 @@ const BOX: Record<GiftMode, TargetAndTransition> = {
     rotate: [0, 0, 0, 0, 0, -6, 7, -8, 8, -5, 0],
     y: '0%',
   },
-  bloom: { scaleX: [1.08, 0.93, 1.03, 1], scaleY: [0.88, 1.12, 0.97, 1], rotate: 0, y: '10%' },
-  open: { scaleX: 1, scaleY: 1, rotate: 0, y: '10%' },
+  bloom: { scaleX: [1.08, 0.93, 1.03, 1], scaleY: [0.88, 1.12, 0.97, 1], rotate: 0, y: '6%' },
+  open: { scaleX: 1, scaleY: 1, rotate: 0, y: '6%' },
 }
+/** The lid jiggles as pressure builds, then pops off and spins away. */
+const LID_WIGGLE: TargetAndTransition = {
+  ...BOX.wiggle,
+  y: ['0%', '0%', '0%', '0%', '0%', '-2%', '0%', '-3.5%', '0%', '-5%', '-1%'],
+}
+const LID_POP: TargetAndTransition = {
+  x: ['0%', '4%', '12%'],
+  y: ['0%', '-58%', '-125%'],
+  rotate: [0, 18, 38],
+  scale: [1, 1.06, 0.92],
+  opacity: [1, 1, 0],
+}
+const LID_POP_T: Transition = { duration: 0.85, times: [0, 0.4, 1], ease: ['easeOut', 'easeIn'] }
 const BOX_T: Record<GiftMode, Transition> = {
   idle: { duration: 1.1, repeat: Infinity, repeatDelay: 2.8, ease: 'easeInOut', delay: 1.2 },
   wiggle: { duration: 1.15, ease: 'easeInOut', times: [0, 0.1, 0.2, 0.3, 0.38, 0.5, 0.6, 0.7, 0.8, 0.9, 1] },
@@ -53,7 +69,7 @@ const GLOW_T: Record<GiftMode, Transition> = {
   open: { duration: 0.6 },
 }
 
-export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = false }: GiftProps) {
+export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = false, children }: GiftProps) {
   const bloomed = mode === 'bloom' || mode === 'open'
   // Already-open gifts (final layout) appear bloomed without replaying, unless we got here by skipping.
   const instant = mode === 'open' && !enterFromClosed
@@ -102,12 +118,34 @@ export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = fals
         )}
 
         <BaseLeaves show={bloomed} instant={instant} />
+
+        {/* The open box: its inside, then flowers and gifts, then its front wall on top of them */}
+        {bloomed && (
+          <motion.div className="box box--base" initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }} animate={BOX[mode]} transition={BOX_T[mode]}>
+            <img src={ART.boxBase} className="box-img" alt="" draggable={false} />
+          </motion.div>
+        )}
         {bloomed && <Bloom instant={instant} />}
+        {children && <div className="gift-items">{children}</div>}
+        {bloomed && (
+          <motion.div className="box box--front" initial={instant ? BOX.open : { scaleX: 1.08, scaleY: 0.88, y: '0%', rotate: 0 }} animate={BOX[mode]} transition={BOX_T[mode]}>
+            <img src={ART.boxFront} className="box-img" alt="" draggable={false} />
+          </motion.div>
+        )}
+
         {(mode === 'wiggle' || mode === 'bloom') && <Sprout burst={mode === 'bloom'} />}
 
-        <motion.div className="box" initial={instant ? BOX.open : false} animate={BOX[mode]} transition={BOX_T[mode]}>
-          <img src={ART.giftBox} className="box-img" alt="" draggable={false} />
-        </motion.div>
+        {/* The lid (the original closed-box art): shakes, then pops off */}
+        {(mode !== 'open' || enterFromClosed) && (
+          <motion.div
+            className="box box--lid"
+            initial={false}
+            animate={bloomed ? LID_POP : mode === 'wiggle' ? LID_WIGGLE : BOX[mode]}
+            transition={bloomed ? LID_POP_T : BOX_T[mode]}
+          >
+            <img src={ART.giftBox} className="box-img" alt="" draggable={false} />
+          </motion.div>
+        )}
       </div>
     </motion.div>
   )
@@ -244,11 +282,11 @@ function Flower({ variant, className, tilt = 0, delay, instant }: { variant: Flo
 function Bloom({ instant }: { instant: boolean }) {
   return (
     <div className="bloom" aria-hidden>
-      <Leaf className="top-leaf top-leaf--l" rotate={-48} delay={0.16} instant={instant} />
-      <Leaf className="top-leaf top-leaf--r" rotate={48} delay={0.2} instant={instant} mirror />
-      <Flower variant="yellow" className="flower--side flower--l" tilt={-18} delay={0.14} instant={instant} />
-      <Flower variant="pink" className="flower--side flower--r" tilt={16} delay={0.2} instant={instant} />
-      <Flower variant="main" className="flower--main" delay={0.02} instant={instant} />
+      <Leaf className="top-leaf top-leaf--l" rotate={-48} delay={0.34} instant={instant} />
+      <Leaf className="top-leaf top-leaf--r" rotate={48} delay={0.38} instant={instant} mirror />
+      <Flower variant="yellow" className="flower--side flower--l" tilt={-18} delay={0.32} instant={instant} />
+      <Flower variant="pink" className="flower--side flower--r" tilt={16} delay={0.38} instant={instant} />
+      <Flower variant="main" className="flower--main" delay={0.22} instant={instant} />
     </div>
   )
 }

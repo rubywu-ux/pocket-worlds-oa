@@ -6,21 +6,20 @@ import sticker from './assets/sticker-boba.webp'
 import irene from './assets/irene.webp'
 import matchaBoba from './assets/matcha-boba.webp'
 import bouquet from './assets/bouquet.webp'
-import sweetheartBox from './assets/sweetheart-box.webp'
+import boxBase from './assets/box-base.webp'
+import boxFront from './assets/box-base-front.webp'
 
-export const ART = { giftBox, envelope, sticker }
+export const ART = { giftBox, boxBase, boxFront, envelope, sticker }
 
 export const SENDER = { name: 'Irene', avatar: irene }
 export const RECIPIENT = { name: 'Sage' }
 
-/** `rises`: pops up out of the bloom. The Sweetheart Box is the gift itself, so it doesn't. */
-export type GiftItem = { id: string; name: string; qty: number; img: string; rises: boolean }
+export type GiftItem = { id: string; name: string; qty: number; img: string }
 
-// Same items, in the same order, as Ruby's Checkout "gift purchase" list.
+// What Sage receives. (The Sweetheart Box gift style is only shown on Irene's side, at Checkout.)
 export const ITEMS: GiftItem[] = [
-  { id: 'boba', name: 'Matcha Boba', qty: 2, img: matchaBoba, rises: true },
-  { id: 'bouquet', name: 'Summertime Bouquet', qty: 1, img: bouquet, rises: true },
-  { id: 'box', name: 'Sweetheart Box', qty: 1, img: sweetheartBox, rises: false },
+  { id: 'boba', name: 'Matcha Boba', qty: 2, img: matchaBoba },
+  { id: 'bouquet', name: 'Summertime Bouquet', qty: 1, img: bouquet },
 ]
 
 export const NOTE = {
@@ -30,4 +29,4 @@ export const NOTE = {
 }
 
 /** Everything the animation shows, so it can be fetched before the first tap. */
-export const ALL_ART = [ART.giftBox, ART.envelope, ART.sticker, SENDER.avatar, ...ITEMS.map((i) => i.img)]
+export const ALL_ART = [ART.giftBox, ART.boxBase, ART.boxFront, ART.envelope, ART.sticker, SENDER.avatar, ...ITEMS.map((i) => i.img)]

@@ -1,7 +1,7 @@
 /**
  * The opening sequence, in order.
  *  wiggle    – anticipation: the box squashes and shakes, a sprout pushes out
- *  bloom     – the bud bursts: flowers spill out of the box, items rise out
+ *  bloom     – unboxing: the lid pops off, flowers grow out of the open box, the gifts pop out
  *  envelope  – the envelope floats to the center, everything else dims
  *  letterOut – the letter card ("from: Irene / sending to: Sage") slips out of the envelope
  *  letter    – the letter comes forward and waits: "Tap to open"
@@ -17,9 +17,9 @@ export type Phase = 'idle' | 'opening' | 'open' | 'closed'
 export const TIMELINE: Record<Step, number | null> = {
   wiggle: 0,
   bloom: 1150,
-  envelope: 2750,
-  letterOut: 3350,
-  letter: 4000,
+  envelope: 3150,
+  letterOut: 3750,
+  letter: 4400,
   read: null,
 }
 

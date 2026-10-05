@@ -6,7 +6,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 
 **The gift** (from Ruby's Customization & Checkout designs):
 - Gift style: *sweetheart* (pink heart box, yellow ribbon) + envelope
-- Contents: Matcha Boba ×2, Summertime Bouquet ×1, Sweetheart Box ×1 (free gift style; listed in Checkout's "gift purchase" since 2026-10-04). The box is the gift itself, so it doesn't rise out of the bloom; it appears in the "in your gift" list after opening.
+- Contents Sage receives: Matcha Boba ×2, Summertime Bouquet ×1. (The Sweetheart Box gift style appears only on Irene's side, at Checkout; Ruby, 2026-10-04.)
 - Note: light-green ruled note, "To: Sage", "So nice to see you on here again! Love your creations as always." — Irene
 - Sticker on the note: Matcha Boba (the "+1 sticker")
 - Postage: *lovely* (heart)
@@ -16,6 +16,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 - Opens by tapping the gift, or the optional **Open** button at the bottom.
 - The animation is tied to gardening: the gift **sprouts open** or **blooms open**.
 - Reference: Duolingo. It ties opening a gift box to the user emotionally through eye-catching, captivating interactions.
+- **Updated 2026-10-04:** show the **unboxing** of the box with the gifts popping out of it. When the gifts emerge, they get a **popping scale-in** motion.
 
 ## 2. Note reveal
 

@@ -60,9 +60,10 @@ export function Stage({ phase, step, reduced, onAdvance }: StageProps) {
               mode={giftMode}
               onActivate={opening ? undefined : onAdvance}
               label={`Open your gift from ${SENDER.name}`}
-            />
+            >
+              {bloomed && ITEMS.map((it, i) => <PoppingItem key={it.id} item={it} index={i} />)}
+            </Gift>
             {!noteStage && <TuckedEnvelope pushed={bloomed} />}
-            {bloomed && ITEMS.filter((it) => it.rises).map((it, i) => <RisingItem key={it.id} item={it} index={i} />)}
             {bloomed && !reduced && <Burst size={giftPx} />}
           </motion.div>
         </div>
@@ -128,20 +129,31 @@ function TuckedEnvelope({ pushed }: { pushed: boolean }) {
   )
 }
 
-/** Where each item lands on top of the bloom (percent of the gift area). */
-const SPOTS: Record<string, { left: string; top: string; width: string }> = {
-  boba: { left: '-6%', top: '-34%', width: '40%' },
-  bouquet: { left: '64%', top: '-38%', width: '42%' },
+/**
+ * Where each gift lands above the open box (percent of the gift area), and where it starts:
+ * inside the box, expressed as an offset in its own width so it rises from behind the front wall.
+ */
+const SPOTS: Record<string, { left: string; top: string; width: string; fromX: string; fromY: string }> = {
+  boba: { left: '-6%', top: '-34%', width: '40%', fromX: '90%', fromY: '150%' },
+  bouquet: { left: '64%', top: '-38%', width: '42%', fromX: '-83%', fromY: '150%' },
 }
 
-function RisingItem({ item, index }: { item: GiftItem; index: number }) {
+/** A gift popping out of the box: shoots up from inside, then a bouncy scale-in as it lands. */
+function PoppingItem({ item, index }: { item: GiftItem; index: number }) {
+  const spot = SPOTS[item.id]
+  const delay = 0.45 + index * 0.18 // after the lid is off and the flowers start growing
   return (
     <motion.div
       className="rise"
-      style={SPOTS[item.id]}
-      initial={{ opacity: 0, scale: 0.2, y: '55%' }}
-      animate={{ opacity: 1, scale: 1, y: '0%' }}
-      transition={{ type: 'spring', stiffness: 250, damping: 13, delay: 0.22 + index * 0.15 }}
+      style={{ left: spot.left, top: spot.top, width: spot.width }}
+      initial={{ x: spot.fromX, y: spot.fromY, scale: 0, opacity: 0 }}
+      animate={{ x: '0%', y: '0%', scale: [0, 1.28, 0.9, 1.06, 1], opacity: 1 }}
+      transition={{
+        x: { type: 'spring', stiffness: 170, damping: 17, delay },
+        y: { type: 'spring', stiffness: 170, damping: 15, delay },
+        scale: { duration: 0.8, times: [0, 0.42, 0.62, 0.8, 1], ease: 'easeOut', delay },
+        opacity: { duration: 0.12, delay },
+      }}
     >
       <motion.div layoutId={`item-${item.id}`} className="rise-art">
         <img src={item.img} alt={item.name} draggable={false} />
@@ -149,8 +161,8 @@ function RisingItem({ item, index }: { item: GiftItem; index: number }) {
       <motion.span
         className="qty-badge"
         initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 520, damping: 15, delay: 0.6 + index * 0.15 }}
+        animate={{ scale: [0, 1.3, 1] }}
+        transition={{ duration: 0.4, delay: delay + 0.55, ease: 'easeOut' }}
       >
         ×{item.qty}
       </motion.span>
