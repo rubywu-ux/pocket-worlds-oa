@@ -1,20 +1,22 @@
 // The gift Irene sent Sage. Mirrors Ruby's Customization & Checkout designs in Figma.
-const asset = (file: string) => `${import.meta.env.BASE_URL}assets/${file}`
+// Art is imported so the build gives each file a content hash: browsers never show a stale version.
+import giftBox from './assets/gift-box.webp'
+import envelope from './assets/envelope.webp'
+import sticker from './assets/sticker-boba.webp'
+import irene from './assets/irene.webp'
+import matchaBoba from './assets/matcha-boba.webp'
+import bouquet from './assets/bouquet.webp'
 
-export const ART = {
-  giftBox: asset('gift-box.webp'),
-  envelope: asset('envelope.webp'),
-  sticker: asset('sticker-boba.webp'),
-}
+export const ART = { giftBox, envelope, sticker }
 
-export const SENDER = { name: 'Irene', avatar: asset('irene.webp') }
+export const SENDER = { name: 'Irene', avatar: irene }
 export const RECIPIENT = { name: 'Sage' }
 
 export type GiftItem = { id: string; name: string; qty: number; img: string }
 
 export const ITEMS: GiftItem[] = [
-  { id: 'boba', name: 'Matcha Boba', qty: 2, img: asset('matcha-boba.webp') },
-  { id: 'bouquet', name: 'Summertime Bouquet', qty: 1, img: asset('bouquet.webp') },
+  { id: 'boba', name: 'Matcha Boba', qty: 2, img: matchaBoba },
+  { id: 'bouquet', name: 'Summertime Bouquet', qty: 1, img: bouquet },
 ]
 
 export const NOTE = {
