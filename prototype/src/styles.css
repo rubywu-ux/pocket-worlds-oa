@@ -890,6 +890,28 @@ img {
   font-size: 15px;
 }
 
+/* Phones: keep the reply actions pinned to the bottom over a soft scrim (like the Gift Shop's bottom scrim) */
+@media (max-width: 639px) {
+  :root {
+    --gift-sm: clamp(130px, min(40vw, 21dvh), 300px);
+  }
+  .open-layout {
+    gap: 16px;
+    padding-bottom: 0;
+  }
+  .open-details {
+    gap: 10px;
+  }
+  .actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 6;
+    margin: 4px calc(-1 * var(--pad)) 0;
+    padding: 22px var(--pad) calc(16px + env(safe-area-inset-bottom));
+    background: linear-gradient(to bottom, rgba(30, 35, 30, 0), var(--n850) 30%);
+  }
+}
+
 /* ---------- Bigger screens ---------- */
 @media (min-width: 640px) {
   .actions {

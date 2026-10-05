@@ -7,7 +7,7 @@ Ruby Wu's Product Designer take-home for **Pocket Worlds** (2026).
 | Brief | [Product Designer Take-Home Evaluation (2026)](https://pocketworlds.notion.site/Product-Designer-Take-Home-Evaluation-2026-3c8df96d6c1e8042aca9e2b259794841) |
 | Figma | [Take-Home](https://www.figma.com/design/MRDdpLZtFAk8viy9ZWGRxf/Take-Home?node-id=9146-1156) |
 | Prototype | [rubywu-ux.github.io/pocket-worlds-oa](https://rubywu-ux.github.io/pocket-worlds-oa/) (source in [`prototype/`](prototype/)) |
-| Portfolio | _add link_ |
+| Portfolio | [ruby-wu.framer.website](https://ruby-wu.framer.website) |
 
 ## The brief, in short
 
@@ -34,7 +34,7 @@ The prototype should answer:
 
 | Question | Answer in the prototype |
 |---|---|
-| What is the opening animation? | Tap the gift or **Open**. The box squashes and shakes while a sprout pushes out of the top. Then the bud bursts: flowers and leaves spill out of the box like a planter, light rays spin up, petals and sparkles burst out, and the items (Matcha Boba ×2, Summertime Bouquet ×1) pop up out of the bloom. |
+| What is the opening animation? | Tap the gift or **Open**. The box squashes and shakes while a sprout pushes out of the top. Then the bud bursts: flowers and leaves spill out of the box like a planter, light rays spin up, petals and sparkles burst out, and the items (Matcha Boba ×2, Summertime Bouquet ×1) pop up out of the bloom. After opening, "in your gift" lists them with the Sweetheart Box ×1, matching the Checkout screen. |
 | How is the note shown with the gift? | The envelope floats to the center and the letter (the "from: Irene / sending to: Sage" card from Checkout) slips out of it and waits under "Take a peek": "Tap the letter to open it." Tapping fades it into Irene's note ("Irene left you a note"), and her Matcha Boba sticker slaps on. After **Continue**, the note settles underneath the opened gift and its items. The sticker keeps gently rocking: "I'm here!" |
 | Any further connection after opening? | **Send a gift back** (opens the gift shop with Irene as recipient) and **Visit Irene's garden**. |
 
@@ -56,7 +56,7 @@ Run locally: `cd prototype && npm install && npm run dev`
 - [ ] Final design: Customization & Recipient
 - [ ] Final design: Checkout & Send
 - [ ] Interactive prototype: Reception + Opening (live URL; clickable, not a video or GIF)
-- [ ] Hours worked stated in the Figma file
+- [x] Hours worked stated in the Figma file
 - [ ] Portfolio + prototype links at the top of the Figma file
 - [ ] Flows laid out left to right in reading order
 
@@ -76,7 +76,9 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 
 | Date | Hours | What I worked on |
 |---|---|---|
-| | | |
+| Oct 1 | 5 | |
+| Oct 2 | 5 | |
+| Oct 3 | 7 | |
 
 ## Repo structure
 

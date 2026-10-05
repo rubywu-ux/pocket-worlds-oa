@@ -6,7 +6,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 
 **The gift** (from Ruby's Customization & Checkout designs):
 - Gift style: *sweetheart* (pink heart box, yellow ribbon) + envelope
-- Contents: Matcha Boba ×2, Summertime Bouquet ×1
+- Contents: Matcha Boba ×2, Summertime Bouquet ×1, Sweetheart Box ×1 (free gift style; listed in Checkout's "gift purchase" since 2026-10-04). The box is the gift itself, so it doesn't rise out of the bloom; it appears in the "in your gift" list after opening.
 - Note: light-green ruled note, "To: Sage", "So nice to see you on here again! Love your creations as always." — Irene
 - Sticker on the note: Matcha Boba (the "+1 sticker")
 - Postage: *lovely* (heart)

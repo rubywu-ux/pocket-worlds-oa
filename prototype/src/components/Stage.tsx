@@ -62,7 +62,7 @@ export function Stage({ phase, step, reduced, onAdvance }: StageProps) {
               label={`Open your gift from ${SENDER.name}`}
             />
             {!noteStage && <TuckedEnvelope pushed={bloomed} />}
-            {bloomed && ITEMS.map((it, i) => <RisingItem key={it.id} item={it} index={i} />)}
+            {bloomed && ITEMS.filter((it) => it.rises).map((it, i) => <RisingItem key={it.id} item={it} index={i} />)}
             {bloomed && !reduced && <Burst size={giftPx} />}
           </motion.div>
         </div>
