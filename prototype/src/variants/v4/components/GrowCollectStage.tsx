@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimate, useMotionValue, useMotionValueEvent, useReducedMotion } from 'motion/react'
 import { ART, ITEMS, SENDER, type GiftItem } from '../../../data'
-import { haptic, sfx, startWater } from '../../shared/feedback'
+import { haptic, sfx } from '../../shared/feedback'
 import { SkipButton } from '../../shared/SoundToggle'
 import { useViewport } from '../useViewport'
 import { Gift } from './Gift'
@@ -124,7 +124,6 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     wateringRef.current = true
     setWatering(true)
     wateredAt.current = performance.now()
-    water.current = startWater()
     haptic.light()
   }, [])
   /** Another tap while it waters skips ahead to the bloom (ignoring an accidental double-tap). */
@@ -486,8 +485,6 @@ function UnrollOverlay({ w, onContinue }: { w: number; onContinue: () => void })
   const noteH = (cardW * 119) / 355
   const [stage, setStage] = useState(0) // 0 letter pops up · 1 unrolling · 2 sticker + continue
   useEffect(() => {
-    sfx.paper()
-    sfx.whoosh(true, 0.05)
     const a = window.setTimeout(() => {
       setStage(1)
       sfx.paper()
