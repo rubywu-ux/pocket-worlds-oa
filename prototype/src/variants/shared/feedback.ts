@@ -72,22 +72,31 @@ function ctx(): Audio | null {
   return audio
 }
 
-/** Browsers only allow sound after a user gesture: unlock on the first touch/key. */
+/**
+ * Browsers only allow sound after a user gesture. On phones (iOS Safari especially) the gesture only counts
+ * when the finger LIFTS (touchend / pointerup / click), not when it first touches the screen (pointerdown),
+ * so listen for all of them and keep trying until the audio is actually running.
+ */
 if (typeof window !== 'undefined') {
-  const unlock = () => {
+  const EVENTS = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'] as const
+  const stop = () => EVENTS.forEach((e) => window.removeEventListener(e, unlock, true))
+  function unlock() {
     const a = ctx()
-    if (a) {
-      // iOS needs something to actually play inside the gesture
-      const b = a.c.createBufferSource()
-      b.buffer = a.c.createBuffer(1, 1, 22050)
-      b.connect(a.out)
-      b.start()
-    }
-    window.removeEventListener('pointerdown', unlock, true)
-    window.removeEventListener('keydown', unlock, true)
+    if (!a) return // muted: the sound toggle unlocks it when turned back on
+    if (a.c.state === 'running') return stop()
+    // iOS needs something to actually play inside the gesture
+    const b = a.c.createBufferSource()
+    b.buffer = a.c.createBuffer(1, 1, 22050)
+    b.connect(a.out)
+    b.start()
+    a.c
+      .resume()
+      .then(() => {
+        if (a.c.state === 'running') stop()
+      })
+      .catch(() => {})
   }
-  window.addEventListener('pointerdown', unlock, true)
-  window.addEventListener('keydown', unlock, true)
+  EVENTS.forEach((e) => window.addEventListener(e, unlock, true))
 }
 
 const exp = (p: AudioParam, v: number, t: number) => p.exponentialRampToValueAtTime(Math.max(v, 0.0001), t)

@@ -4,7 +4,7 @@ import { ART, ITEMS, SENDER } from '../../../data'
 import { haptic, sfx } from '../../shared/feedback'
 import { Note } from './Note'
 import { OfferCell } from './RewardParts'
-import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, Toast } from './ui'
+import { Button, CloseIcon, GiftIcon, IconButton, Toast } from './ui'
 
 type OpenViewProps = {
   skipped: boolean
@@ -95,9 +95,6 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
       <header className="topbar">
         <IconButton label="Close" onClick={onClose}>
           <CloseIcon />
-        </IconButton>
-        <IconButton label="Replay the opening" onClick={onReplay}>
-          <ReplayIcon />
         </IconButton>
       </header>
 
