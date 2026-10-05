@@ -55,3 +55,16 @@
 .topbar {
   padding-right: calc(14px + 52px);
 }
+
+/* Very narrow phones: keep the variation tag clear of the Skip pill and sound toggle */
+@media (max-width: 359px) {
+  .variant-tag {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}
+@media (max-width: 339px) {
+  .variant-tag {
+    display: none;
+  }
+}

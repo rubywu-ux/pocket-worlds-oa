@@ -28,7 +28,9 @@ const clamp = (min: number, v: number, max: number) => Math.max(min, Math.min(v,
 export function GrowStage({ onDone }: { onDone: (skipped: boolean) => void }) {
   const { w, h } = useViewport()
   const reduced = useReducedMotion() ?? false
-  const giftPx = clamp(220, Math.min(w * 0.66, h * 0.4), 420)
+  // On short phones (under ~760px tall) the gift shrinks so the title, "from Irene" and the controls
+  // below always fit; taller screens keep the original size.
+  const giftPx = h <= 760 ? clamp(110, Math.min(w * 0.66, h - 390), 420) : clamp(220, Math.min(w * 0.66, h * 0.4), 420)
   const [mode, setMode] = useState<Mode>('grow')
   const [holding, setHolding] = useState(false)
   const [bucket, setBucket] = useState(0) // progress in 5% steps, for copy + a11y

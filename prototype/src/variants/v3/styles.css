@@ -1567,3 +1567,21 @@ img {
     animation: none;
   }
 }
+
+/* Short phones: a smaller "Collected" card on the ending page, so the note and Say thanks fit above the pinned buttons */
+@media (max-height: 760px) and (max-aspect-ratio: 1/1) {
+  .rhero {
+    width: clamp(84px, 14dvh, 130px);
+  }
+  .rhero .offer-name {
+    display: none;
+  }
+  .rhero .offer-tab {
+    font-size: 15px;
+  }
+  .collected {
+    right: -26px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}

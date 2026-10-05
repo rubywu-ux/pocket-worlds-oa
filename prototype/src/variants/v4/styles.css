@@ -1914,3 +1914,50 @@ img {
 .app--v4 .flower--main {
   top: 3%;
 }
+
+/* ---------- Short phones (under ~760px tall: iPhone SE, or any phone with the browser bars showing) ----------
+   Stack the opening screen instead of centering it over the whole screen, so the gift, the title,
+   "from Irene" and the controls each get their own room and never overlap. Taller screens are unchanged. */
+@media (max-height: 760px) {
+  .grow-stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .grow-stage > .stage-main {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: calc(66px + env(safe-area-inset-top));
+    gap: clamp(16px, 3dvh, 28px);
+  }
+  .grow-stage > .bottom {
+    position: relative;
+    flex: none;
+    min-height: 0;
+    padding-top: 12px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .grow-stage .from-line {
+    position: static;
+    margin-top: 10px;
+  }
+}
+
+/* Short phones: a smaller "Collected" card on the ending page, so the note and Say thanks fit above the pinned buttons */
+@media (max-height: 760px) and (max-aspect-ratio: 1/1) {
+  .rhero {
+    width: clamp(84px, 14dvh, 130px);
+  }
+  .rhero .offer-name {
+    display: none;
+  }
+  .rhero .offer-tab {
+    font-size: 15px;
+  }
+  .collected {
+    right: -26px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}

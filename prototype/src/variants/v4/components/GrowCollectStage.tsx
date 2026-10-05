@@ -36,7 +36,9 @@ type Flight = { item: GiftItem; slot: { x: number; y: number }; from: { x: numbe
 export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => void }) {
   const { w, h } = useViewport()
   const reduced = useReducedMotion() ?? false
-  const giftPx = clamp(220, Math.min(w * 0.66, h * 0.4), 420)
+  // On short phones (under ~760px tall) the gift shrinks so the title, "from Irene" and the controls
+  // below always fit; taller screens keep the original size.
+  const giftPx = h <= 760 ? clamp(110, Math.min(w * 0.66, h - 390), 420) : clamp(220, Math.min(w * 0.66, h * 0.4), 420)
   const [mode, setMode] = useState<Mode>('grow')
   const [watering, setWatering] = useState(false)
   const [bucket, setBucket] = useState(0) // progress in 5% steps, for copy + a11y

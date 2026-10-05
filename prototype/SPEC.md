@@ -46,6 +46,8 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 
 - Adapts to mobile, tablet and desktop. Scalable and applicable.
 
+- **Updated 2026-10-04 (Ruby: "mobile version is buggy, Water it overlaps 'from Irene'; make it scale to mobile"):** on phones under ~760px tall (iPhone SE, or any phone with the browser bars showing), the opening screen stacks top-to-bottom (gift → title → "from Irene" → controls) and the gift shrinks to fit, so nothing overlaps. Taller screens are unchanged. Applied to the main prototype, V1 and V4. On V3/V4's ending page, the "Collected" card is smaller on short phones so the note fits above the pinned buttons.
+
 ## 6. Live link
 
 - Online as a live link so recruiters can view and interact with the recipient's gift-opening screen.

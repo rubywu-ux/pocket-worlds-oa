@@ -1061,3 +1061,35 @@ img {
     animation: none;
   }
 }
+
+/* ---------- Short phones (under ~760px tall: iPhone SE, or any phone with the browser bars showing) ----------
+   Stack the opening screen instead of centering it over the whole screen, so the gift, the title,
+   "from Irene" and the Open button each get their own room and never overlap. Taller screens are unchanged. */
+@media (max-height: 760px) {
+  :root {
+    --gift: clamp(110px, min(66vw, calc(100dvh - 300px)), 440px);
+  }
+  .stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .stage > .stage-main {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: calc(56px + env(safe-area-inset-top));
+    gap: clamp(16px, 3dvh, 28px);
+  }
+  .stage > .bottom {
+    position: relative;
+    flex: none;
+    min-height: 0;
+    padding-top: 12px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .stage .from-line {
+    position: static;
+    margin-top: 10px;
+  }
+}
