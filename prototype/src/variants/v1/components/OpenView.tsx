@@ -1,28 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { ITEMS, SENDER } from '../../../data'
+import { haptic, sfx } from '../../shared/feedback'
 import { Gift } from './Gift'
 import { GiftItems } from './GiftItems'
+import { Soil } from './GrowParts'
 import { Note } from './Note'
 import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
 
 type OpenViewProps = {
-  /** True when Sage skipped the animation: the box still pops open, just quickly. */
+  /** True when Sage skipped: the box blooms open quickly instead of appearing already open. */
   skipped: boolean
   onReplay: () => void
   onClose: () => void
 }
 
-/** The opened gift: what's inside, Irene's note (with its sticker), and ways to reply. */
+/**
+ * Variation 1's opened state: the gift stays planted and in bloom (it grew, so it stays grown),
+ * with what's inside, Irene's note and ways to reply.
+ */
 export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
   const [toast, setToast] = useState<{ msg: string; id: number } | null>(null)
-  // The gift arrives open (gifts inside), then goes back to its closed, formal state. After a skip it's already closed.
-  const [closed, setClosed] = useState(skipped)
-  useEffect(() => {
-    if (skipped) return
-    const t = window.setTimeout(() => setClosed(true), 1000)
-    return () => window.clearTimeout(t)
-  }, [skipped])
   const timer = useRef<number | undefined>(undefined)
 
   const show = (msg: string) => {
@@ -30,7 +28,18 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
     setToast({ msg, id: Date.now() })
     timer.current = window.setTimeout(() => setToast(null), 2800)
   }
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+  useEffect(() => {
+    const t = [
+      window.setTimeout(() => sfx.pop(2), 260),
+      window.setTimeout(() => sfx.pop(4), 360),
+      window.setTimeout(() => haptic.tick(), 300),
+    ]
+    if (skipped) t.push(window.setTimeout(() => sfx.ding(), 80))
+    return () => {
+      t.forEach(clearTimeout)
+      window.clearTimeout(timer.current)
+    }
+  }, [skipped])
 
   return (
     <motion.section
@@ -52,14 +61,9 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
       <div className="open-layout">
         <div className="open-hero">
           <div className="gift-area gift-area--sm">
-            <Gift
-              layoutId="gift"
-              mode={closed ? 'closed' : 'open'}
-              closeInstantly={skipped}
-              onActivate={onReplay}
-              label="Replay the gift opening"
-            >
-              {!closed && <GiftItems instant />}
+            <Soil />
+            <Gift layoutId="gift" mode="open" enterFromClosed={skipped} onActivate={onReplay} label="Water the gift again">
+              <GiftItems instant={!skipped} />
             </Gift>
           </div>
           <motion.h1
@@ -70,8 +74,13 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
           >
             A gift from {SENDER.name}!
           </motion.h1>
-          <motion.p className="replay-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-            Tap the gift to open it again
+          <motion.p
+            className="planted-chip"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, type: 'spring', stiffness: 400, damping: 18 }}
+          >
+            <SproutIcon /> Planted in your garden
           </motion.p>
         </div>
 
@@ -134,4 +143,3 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
     </motion.section>
   )
 }
-

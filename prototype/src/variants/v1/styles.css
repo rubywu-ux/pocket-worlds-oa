@@ -1079,3 +1079,290 @@ img {
   letter-spacing: 0.04em;
   pointer-events: none;
 }
+
+/* =====================================================================
+   Variation 1 · "Grow it" (press and hold to water the gift open)
+   ===================================================================== */
+.grow-target--on {
+  cursor: pointer;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.soil {
+  position: absolute;
+  left: -12%;
+  top: 80%;
+  width: 124%;
+  height: 26%;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.tuft {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: sway 3.4s ease-in-out infinite;
+}
+.grow-sprout {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+.sprout-sway {
+  transform-origin: 60px 34px;
+  animation: sway 3s ease-in-out infinite;
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+.grow-gift {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform-origin: 50% 92%;
+}
+
+/* Watering can, top right of the gift */
+.can {
+  position: absolute;
+  left: 64%;
+  top: -17%;
+  width: 40%;
+  aspect-ratio: 120 / 100;
+  z-index: 6;
+  pointer-events: none;
+  container-type: inline-size;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+.can svg {
+  display: block;
+  overflow: visible;
+}
+.drops {
+  position: absolute;
+  left: 3.5%;
+  top: 38%;
+  width: 0;
+  height: 0;
+  transform: rotate(34deg); /* cancels the can's tilt, so water falls straight down */
+}
+.drop {
+  position: absolute;
+  top: 0;
+  width: 5cqw;
+  height: 7cqw;
+  margin-left: -2.5cqw;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: linear-gradient(180deg, #e6f6ff, #5cb8f6);
+  opacity: 0;
+  animation: drip 0.5s linear infinite;
+}
+@keyframes drip {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-6cqw, 46cqw) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Growth meter (Duolingo-style chunky bar with a shine stripe) */
+.grow-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.meter {
+  position: relative;
+  height: 16px;
+  margin: 0 30px 0 4px;
+  border-radius: 10px;
+  background: var(--n900);
+  border: 1px solid rgba(240, 245, 240, 0.12);
+}
+.meter-fill {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  border-radius: 10px;
+  background: var(--primary);
+  overflow: hidden;
+}
+.meter-shine {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: 3px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.meter-notch {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--n900);
+}
+.meter-end {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  overflow: visible;
+}
+.hold-btn {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.hold-btn--on {
+  box-shadow:
+    0 0 0 6px rgba(112, 229, 29, 0.18),
+    0 6px 24px -6px rgba(112, 229, 29, 0.7);
+}
+
+/* The letter, hanging off the box like a gift tag */
+.hang {
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  width: 60%;
+  z-index: 7;
+}
+.hang-sway {
+  position: relative;
+  transform-origin: 50% 0;
+  animation: tag-sway 3.2s ease-in-out 1.8s infinite;
+}
+@keyframes tag-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+.hang-string {
+  display: block;
+  width: 4px;
+  height: 0;
+  padding-top: 16%;
+  margin: 0 auto -2px;
+  border-radius: 2px;
+  background: linear-gradient(#e3a524, #ffd95a);
+}
+.hang-knot {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: #ffd95a;
+  border: 2px solid #e3a524;
+}
+.hang-letter .letter-inner {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Note reading: the tag flips up and the note unrolls beneath it */
+.overlay--split {
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.overlay-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 15, 12, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.overlay--split > .overlay-center {
+  position: relative;
+  z-index: 1;
+}
+.unroll {
+  position: relative;
+  z-index: 1;
+  perspective: 900px;
+}
+.unroll-heading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  justify-content: center;
+  margin-bottom: clamp(50px, 13vw, 72px);
+}
+.unroll-note,
+.unroll-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+.unroll-tag {
+  transform-origin: 50% 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.unroll-roll {
+  position: absolute;
+  left: -2%;
+  top: 0;
+  width: 104%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f2ffe6, #b9f291 55%, #7cbc55);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Open view: "planted" chip under the title */
+.planted-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 9px;
+  border-radius: 20px;
+  background: rgba(112, 229, 29, 0.12);
+  border: 1px solid rgba(112, 229, 29, 0.35);
+  color: #b9f291;
+  font-size: 13px;
+  font-weight: 600;
+}
+.planted-chip svg {
+  width: 16px;
+  height: 16px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tuft,
+  .sprout-sway,
+  .hang-sway {
+    animation: none;
+  }
+}

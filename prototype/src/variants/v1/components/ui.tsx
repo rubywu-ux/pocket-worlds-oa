@@ -1,5 +1,6 @@
 import type { ReactNode, MouseEvent } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import { haptic, sfx } from '../../shared/feedback'
 
 type ButtonProps = {
   children: ReactNode
@@ -15,6 +16,8 @@ export function Button({ children, onClick, variant = 'primary', icon }: ButtonP
       className={`btn btn--${variant}`}
       onClick={(e) => {
         e.stopPropagation()
+        sfx.tap()
+        haptic.light()
         onClick?.(e)
       }}
       whileTap={{ scale: 0.96 }}
@@ -36,6 +39,8 @@ export function IconButton({ label, onClick, children }: { label: string; onClic
       title={label}
       onClick={(e) => {
         e.stopPropagation()
+        sfx.tap()
+        haptic.light()
         onClick()
       }}
       whileTap={{ scale: 0.9 }}

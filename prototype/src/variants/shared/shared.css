@@ -1,0 +1,57 @@
+/* Shared by the three exploration variations (loaded after each variation's styles.css). */
+
+.sound-toggle {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 14px;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(21, 25, 21, 0.65);
+  border: 1px solid rgba(240, 245, 240, 0.14);
+  color: var(--n50);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.sound-toggle[aria-pressed='false'] {
+  color: var(--n400);
+}
+.sound-toggle:focus-visible,
+.skip-pill:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 3px;
+}
+
+.skip-pill {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  left: 14px;
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 22px;
+  background: rgba(21, 25, 21, 0.65);
+  border: 1px solid rgba(240, 245, 240, 0.14);
+  color: var(--n50);
+  font-weight: 600;
+  font-size: 14px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* The variation tag sits between the skip pill and the sound toggle */
+.variant-tag {
+  top: calc(20px + env(safe-area-inset-top));
+  white-space: nowrap;
+}
+
+/* Leave room on the right of the open view's top bar for the sound toggle */
+.topbar {
+  padding-right: calc(14px + 52px);
+}

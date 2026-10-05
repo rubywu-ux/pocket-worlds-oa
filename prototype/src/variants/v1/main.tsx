@@ -5,6 +5,7 @@ import '@fontsource-variable/parkinsans/index.css'
 import App from './App'
 import { ALL_ART } from '../../data'
 import './styles.css'
+import '../shared/shared.css'
 
 // Warm the cache so items and the sticker don't pop in mid-animation.
 for (const src of ALL_ART) {
