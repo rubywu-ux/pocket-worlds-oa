@@ -17,6 +17,8 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 - The animation is tied to gardening: the gift **sprouts open** or **blooms open**.
 - Reference: Duolingo. It ties opening a gift box to the user emotionally through eye-catching, captivating interactions.
 - **Updated 2026-10-04:** show the **unboxing** of the box with the gifts popping out of it. When the gifts emerge, they get a **popping scale-in** motion.
+- **Updated 2026-10-04:** the gifts stay **inside** the box (not floating outside it), scaled to fit and sitting nicely in it. The gifts are the main point and should be emphasized.
+- At the start, the envelope must stay fixed in front of the box (no movement on hover).
 
 ## 2. Note reveal
 
@@ -27,6 +29,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 ## 3. After opening
 
 - The note lives **underneath the gift box**, which is revealed with the listed items.
+- **Updated 2026-10-04:** after reading, the note goes back to its **closed, formal state** (the "from: Irene / sending to: Sage" letter). Tapping it re-opens the note.
 - The note carries the **1 sticker** chosen during customization. The sticker **rocks subtly**, as if to say "I'm here, I'm a cute sticker on your note!"
 - Buttons: **Send a gift back** and **Visit Irene's garden**.
 - An **exit/close** button.

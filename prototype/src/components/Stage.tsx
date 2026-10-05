@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { ART, ITEMS, SENDER, type GiftItem } from '../data'
+import { ART, SENDER } from '../data'
 import { stepIndex, type Phase, type Step } from '../timeline'
 import { useViewport } from '../useViewport'
 import { Gift, type GiftMode } from './Gift'
+import { GiftItems } from './GiftItems'
 import { Letter } from './Letter'
 import { Note } from './Note'
 import { Burst, Twinkles } from './Particles'
@@ -61,7 +62,7 @@ export function Stage({ phase, step, reduced, onAdvance }: StageProps) {
               onActivate={opening ? undefined : onAdvance}
               label={`Open your gift from ${SENDER.name}`}
             >
-              {bloomed && ITEMS.map((it, i) => <PoppingItem key={it.id} item={it} index={i} />)}
+              {bloomed && <GiftItems />}
             </Gift>
             {!noteStage && <TuckedEnvelope pushed={bloomed} />}
             {bloomed && !reduced && <Burst size={giftPx} />}
@@ -126,47 +127,6 @@ function TuckedEnvelope({ pushed }: { pushed: boolean }) {
       animate={pushed ? { x: '12%', y: '16%', rotate: 12, scale: 0.92 } : { x: '0%', y: '0%', rotate: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 240, damping: 15 }}
     />
-  )
-}
-
-/**
- * Where each gift lands above the open box (percent of the gift area), and where it starts:
- * inside the box, expressed as an offset in its own width so it rises from behind the front wall.
- */
-const SPOTS: Record<string, { left: string; top: string; width: string; fromX: string; fromY: string }> = {
-  boba: { left: '-6%', top: '-34%', width: '40%', fromX: '90%', fromY: '150%' },
-  bouquet: { left: '64%', top: '-38%', width: '42%', fromX: '-83%', fromY: '150%' },
-}
-
-/** A gift popping out of the box: shoots up from inside, then a bouncy scale-in as it lands. */
-function PoppingItem({ item, index }: { item: GiftItem; index: number }) {
-  const spot = SPOTS[item.id]
-  const delay = 0.45 + index * 0.18 // after the lid is off and the flowers start growing
-  return (
-    <motion.div
-      className="rise"
-      style={{ left: spot.left, top: spot.top, width: spot.width }}
-      initial={{ x: spot.fromX, y: spot.fromY, scale: 0, opacity: 0 }}
-      animate={{ x: '0%', y: '0%', scale: [0, 1.28, 0.9, 1.06, 1], opacity: 1 }}
-      transition={{
-        x: { type: 'spring', stiffness: 170, damping: 17, delay },
-        y: { type: 'spring', stiffness: 170, damping: 15, delay },
-        scale: { duration: 0.8, times: [0, 0.42, 0.62, 0.8, 1], ease: 'easeOut', delay },
-        opacity: { duration: 0.12, delay },
-      }}
-    >
-      <motion.div layoutId={`item-${item.id}`} className="rise-art">
-        <img src={item.img} alt={item.name} draggable={false} />
-      </motion.div>
-      <motion.span
-        className="qty-badge"
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.3, 1] }}
-        transition={{ duration: 0.4, delay: delay + 0.55, ease: 'easeOut' }}
-      >
-        ×{item.qty}
-      </motion.span>
-    </motion.div>
   )
 }
 

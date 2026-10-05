@@ -282,8 +282,8 @@ function Flower({ variant, className, tilt = 0, delay, instant }: { variant: Flo
 function Bloom({ instant }: { instant: boolean }) {
   return (
     <div className="bloom" aria-hidden>
-      <Leaf className="top-leaf top-leaf--l" rotate={-48} delay={0.34} instant={instant} />
-      <Leaf className="top-leaf top-leaf--r" rotate={48} delay={0.38} instant={instant} mirror />
+      <Leaf className="top-leaf top-leaf--l" rotate={-52} delay={0.34} instant={instant} />
+      <Leaf className="top-leaf top-leaf--r" rotate={52} delay={0.38} instant={instant} mirror />
       <Flower variant="yellow" className="flower--side flower--l" tilt={-18} delay={0.32} instant={instant} />
       <Flower variant="pink" className="flower--side flower--r" tilt={16} delay={0.38} instant={instant} />
       <Flower variant="main" className="flower--main" delay={0.22} instant={instant} />

@@ -34,8 +34,8 @@ The prototype should answer:
 
 | Question | Answer in the prototype |
 |---|---|
-| What is the opening animation? | Tap the gift or **Open**. The box squashes and shakes while a sprout pushes the lid up from inside. Then it unboxes: the lid pops off and spins away, flowers and leaves grow out of the open heart box like a planter, light rays spin up, petals and sparkles burst out, and the gifts (Matcha Boba ×2, Summertime Bouquet ×1) pop out of the box with a bouncy scale-in. |
-| How is the note shown with the gift? | The envelope floats to the center and the letter (the "from: Irene / sending to: Sage" card from Checkout) slips out of it and waits under "Take a peek": "Tap the letter to open it." Tapping fades it into Irene's note ("Irene left you a note"), and her Matcha Boba sticker slaps on. After **Continue**, the note settles underneath the opened gift and its items. The sticker keeps gently rocking: "I'm here!" |
+| What is the opening animation? | Tap the gift or **Open**. The box squashes and shakes while a sprout pushes the lid up from inside. Then it unboxes: the lid pops off and spins away, flowers and leaves grow out of the open heart box like a planter, light rays spin up, petals and sparkles burst out, and the gifts (Matcha Boba ×2, Summertime Bouquet ×1) pop up inside the box with a bouncy scale-in and stay there, glowing, as the focus. |
+| How is the note shown with the gift? | The envelope floats to the center and the letter (the "from: Irene / sending to: Sage" card from Checkout) slips out of it and waits under "Take a peek": "Tap the letter to open it." Tapping fades it into Irene's note ("Irene left you a note"), and her Matcha Boba sticker slaps on. After **Continue**, the note settles underneath the opened gift and its items, then folds back into its closed letter (tap to read it again). The sticker keeps gently rocking: "I'm here!" |
 | Any further connection after opening? | **Send a gift back** (opens the gift shop with Irene as recipient) and **Visit Irene's garden**. |
 
 **Things to try (and break)**

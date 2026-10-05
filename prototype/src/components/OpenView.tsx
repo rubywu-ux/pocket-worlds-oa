@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { ITEMS, SENDER } from '../data'
 import { Gift } from './Gift'
+import { GiftItems } from './GiftItems'
+import { Letter } from './Letter'
 import { Note } from './Note'
 import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
 
@@ -44,7 +46,9 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
       <div className="open-layout">
         <div className="open-hero">
           <div className="gift-area gift-area--sm">
-            <Gift layoutId="gift" mode="open" enterFromClosed={skipped} onActivate={onReplay} label="Replay the gift opening" />
+            <Gift layoutId="gift" mode="open" enterFromClosed={skipped} onActivate={onReplay} label="Replay the gift opening">
+              <GiftItems instant={!skipped} />
+            </Gift>
           </div>
           <motion.h1
             className="title"
@@ -66,7 +70,12 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
           <ul className="item-list">
             {ITEMS.map((it, i) => (
               <li key={it.id} className="item-row">
-                <motion.div layoutId={`item-${it.id}`} className="item-row-art">
+                <motion.div
+                  className="item-row-art"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: [0, 1.25, 0.92, 1] }}
+                  transition={{ duration: 0.6, delay: 0.25 + i * 0.1, ease: 'easeOut' }}
+                >
                   <img src={it.img} alt="" draggable={false} />
                 </motion.div>
                 <motion.div
@@ -91,7 +100,7 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
             ))}
           </ul>
 
-          <Note layoutId="note" className="note--card" fold="open" sticker={skipped ? 'slap' : 'on'} />
+          <NoteCard cameFromReading={!skipped} />
 
           <motion.div
             className="actions"
@@ -111,5 +120,57 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
 
       <Toast message={toast?.msg ?? null} id={toast?.id ?? 0} />
     </motion.section>
+  )
+}
+
+/**
+ * Irene's note under the gift. After Sage reads it, it folds back into its closed, formal state:
+ * the "from: Irene / sending to: Sage" letter (with the sticker). Tap to switch between the two.
+ */
+function NoteCard({ cameFromReading }: { cameFromReading: boolean }) {
+  const [open, setOpen] = useState(cameFromReading)
+  useEffect(() => {
+    if (!cameFromReading) return
+    const t = window.setTimeout(() => setOpen(false), 1100)
+    return () => window.clearTimeout(t)
+  }, [cameFromReading])
+
+  const fade = {
+    initial: { opacity: 0, scale: 0.96, filter: 'blur(5px)' },
+    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+    exit: { opacity: 0, scale: 1.03, filter: 'blur(5px)' },
+    transition: { duration: 0.35, ease: 'easeOut' as const },
+  }
+
+  return (
+    <div className="note-card">
+      <div
+        className="note-card-tap"
+        role="button"
+        tabIndex={0}
+        aria-label={open ? 'Fold the note back into the letter' : `Read ${SENDER.name}'s note`}
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen((o) => !o)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setOpen((o) => !o)
+          }
+        }}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {open ? (
+            <Note key="note" layoutId="note" className="note--card" fold="open" sticker="on" {...fade} />
+          ) : (
+            <motion.div key="letter" {...fade}>
+              <Letter withSticker />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <p className="note-card-hint">{open ? 'Tap to fold it back up' : `Tap to read ${SENDER.name}'s note`}</p>
+    </div>
   )
 }

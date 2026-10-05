@@ -1,11 +1,12 @@
 import { motion, type HTMLMotionProps } from 'motion/react'
 import { RECIPIENT, SENDER } from '../data'
+import { Sticker } from './Note'
 
 /**
  * The letter that slips out of the envelope: Ruby's "from / sending to" card
  * (Checkout frame, 355 × 189) in container-query units so it scales cleanly.
  */
-export function Letter({ className = '', ...rest }: Omit<HTMLMotionProps<'div'>, 'children'>) {
+export function Letter({ className = '', withSticker = false, ...rest }: Omit<HTMLMotionProps<'div'>, 'children'> & { withSticker?: boolean }) {
   return (
     <motion.div className={`letter ${className}`} {...rest}>
       <div className="letter-inner">
@@ -24,6 +25,7 @@ export function Letter({ className = '', ...rest }: Omit<HTMLMotionProps<'div'>,
             strokeLinejoin="round"
           />
         </svg>
+        {withSticker && <Sticker slap={false} className="sticker--letter" />}
       </div>
     </motion.div>
   )

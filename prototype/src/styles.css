@@ -321,39 +321,39 @@ img {
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
 }
 .flower--main {
-  left: 18%;
-  top: -22%;
-  width: 64%;
-  height: 64%;
-  z-index: 3;
+  left: 33%;
+  top: -10%;
+  width: 34%;
+  height: 34%;
+  z-index: 2;
 }
 .flower--l {
-  left: -3%;
-  top: -1%;
-  width: 40%;
-  height: 40%;
-  z-index: 2;
+  left: 2%;
+  top: 0%;
+  width: 28%;
+  height: 28%;
+  z-index: 3;
 }
 .flower--r {
-  left: 63%;
-  top: -5%;
-  width: 38%;
-  height: 38%;
-  z-index: 2;
+  left: 70%;
+  top: -3%;
+  width: 26%;
+  height: 26%;
+  z-index: 3;
 }
 .top-leaf {
   position: absolute;
   z-index: 1;
-  width: 26%;
-  height: 44%;
-  top: -24%;
+  width: 20%;
+  height: 34%;
+  top: -14%;
   overflow: visible;
 }
 .top-leaf--l {
-  left: 10%;
+  left: 18%;
 }
 .top-leaf--r {
-  left: 64%;
+  left: 62%;
 }
 .base-leaf {
   position: absolute;
@@ -397,12 +397,21 @@ img {
   object-fit: contain;
 }
 .rise-art img {
-  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+}
+/* soft light behind each gift so it reads as the hero of the moment */
+.rise-glow {
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 246, 210, 0.55), rgba(255, 246, 210, 0.12) 60%, transparent);
+  pointer-events: none;
 }
 .qty-badge {
   position: absolute;
-  right: 4%;
-  bottom: 6%;
+  right: -2%;
+  top: 2%;
+  z-index: 1;
   padding: 4px 10px;
   border-radius: 20px;
   background: var(--n900);
@@ -849,8 +858,34 @@ img {
   font-size: 13px;
   color: var(--n50);
 }
+.note-card {
+  margin-top: clamp(14px, 4vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.note-card-tap {
+  cursor: pointer;
+  border-radius: 14px;
+  outline: none;
+}
+.note-card-tap:focus-visible {
+  outline: 3px solid rgba(112, 229, 29, 0.7);
+  outline-offset: 3px;
+}
+.note-card-hint {
+  font-size: 12px;
+  color: var(--n400);
+  text-align: center;
+}
 .note--card {
-  margin-top: clamp(26px, 7vw, 36px); /* room for the sticker */
+  margin-top: clamp(22px, 6vw, 30px); /* room for the sticker on the open note */
+}
+/* the sticker rides on the closed letter, in its empty bottom-right corner */
+.sticker--letter {
+  left: 77cqw;
+  top: 30cqw;
+  width: 21cqw;
 }
 .actions {
   display: flex;

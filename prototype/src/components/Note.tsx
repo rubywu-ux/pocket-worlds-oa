@@ -80,10 +80,10 @@ function NoteFace() {
 }
 
 /** The +1 sticker Irene chose. It slaps onto the note, then rocks gently: "I'm here!" */
-function Sticker({ slap }: { slap: boolean }) {
+export function Sticker({ slap, className = '' }: { slap: boolean; className?: string }) {
   return (
     <motion.div
-      className="sticker"
+      className={`sticker ${className}`}
       initial={slap ? { scale: 2.4, rotate: -28, opacity: 0, y: '-35%' } : false}
       animate={{ scale: 1, rotate: 0, opacity: 1, y: '0%' }}
       transition={{ type: 'spring', stiffness: 430, damping: 14, delay: slap ? 0.15 : 0 }}
