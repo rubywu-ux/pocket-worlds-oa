@@ -49,3 +49,27 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 ## 6. Live link
 
 - Online as a live link so recruiters can view and interact with the recipient's gift-opening screen.
+
+## 7. Exploration variations (2026-10-04)
+
+Ruby asked for three variations with their own links that **explore different animation styles and interactive flows, completely different from each other**, keeping the design system as close as possible to Pocket Worlds' Highrise design language (the **Picnic Gift Shop**). She then asked for **sound effects too, using Duolingo's haptics and sound as the reference**. Claude proposed the three directions below; Ruby will review them and pick or refine.
+
+Shared across all three:
+- Same tokens and type as the main prototype (n850/n900, lime #70e51d CTA pill, Passion One titles with the dark text shadow, Parkinsans UI), the same art, the same gift (Matcha Boba ×2, Summertime Bouquet ×1, note with the boba sticker), and the same replies (Send a gift back / Visit Irene's garden), plus close, replay and reduced motion.
+- **Sound + haptics (Duolingo as the reference):**
+  - Every tap answers with a soft bloop and a light tick.
+  - While a moment builds, notes climb a C-major pentatonic ladder and the haptics grow stronger.
+  - The payoff is a two-note "ding", a short major fanfare with sparkles, and a three-pulse "success" haptic.
+  - Physical moments get physical sounds: water, creak, snap, thud, paper and card flick.
+  - All of it is synthesized with Web Audio, with a mute toggle (remembered).
+  - Haptics: the Vibration API (Android), and a system tick via the hidden-switch technique on iOS 18+ Safari.
+
+| | V1 · Grow it | V2 · Pull the ribbon | V3 · Reward reveal |
+|---|---|---|---|
+| Gesture | Press and hold | Drag | Tap |
+| Motion style | Organic growth, paced by the user | Physics: tension, snap, gravity, bounce | Fast, punchy game reward (about 2 s) |
+| Opening | Water the box; a seedling grows in stages; the box blooms open and the gifts pop up inside | The envelope is tied to the ribbon; pull it until the ribbon snaps; the lid flies off; the gifts tumble onto a picnic blanket | An Offer Cell charges, then pops in confetti; three cards deal out and flip |
+| Note | Hangs off the box like a gift tag; it flips up and the note unrolls | Pull the letter out of the envelope; it flips like a card to the note | The third card; tap it to read |
+| After | Gift stays planted and in bloom | Box closed, gifts laid out on the blanket | Gifts collected to storage; one-tap sticker "thanks" reactions to Irene |
+| Skip | Skip pill; a fresh tap during the bloom | Skip pill; a fresh tap during the pop | Tap fast-forwards; Skip pill |
+| Picnic Gift Shop references | Dark UI, lime CTA, Duolingo-style meter | The banner art and its elliptical bottom edge with the title on it; the gingham blanket | The Offer Cell card (display + tab), the banner's confetti motifs |
