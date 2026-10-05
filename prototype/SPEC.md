@@ -78,7 +78,7 @@ Shared across all three:
 
 Ruby's direction: "combine V1 and V2: I like the gamified watering plants and notecard pop up in V1. In V2, I like the reward system it has for the user. I also like the ending of the 'say thanks' page." The reward system and the "Say thanks" ending she pointed to (with a screenshot) are both from **V3** (Reward reveal), so V4 combines V1 + V3:
 
-1. **Grow (V1):** press and hold to water; the seedling grows in stages; Duolingo-style meter, rising notes, stronger haptics.
+1. **Grow (V1):** ~~press and hold to water~~ **Updated (Ruby, 2026-10-04): just tap it.** One tap on the gift or **Water it** and it waters itself: the can pours, the seedling grows in stages, the meter fills, the notes climb and the haptics strengthen (about 2.4 s), then it blooms on its own. Another tap while it waters skips ahead to the bloom (a quick double-tap doesn't count).
 2. **Bloom (V1):** at 100% the box blooms open with a fanfare; the gifts pop up inside it.
 3. **Collect (V3's reward loop):** "Tap the gifts to collect them" / **Collect all**. Each gift jumps out of the box as a face-down reward card (Offer Cell), flips face-up with confetti, then flies into the garden-storage basket (top left), which counts up to +3.
 4. **Note (V1):** the letter swings down off the box like a gift tag; tap it, it flips up and the note unrolls; the sticker slaps on; Continue.

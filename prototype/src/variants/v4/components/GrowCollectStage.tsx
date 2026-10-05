@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent as RPointerEvent } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useAnimate, useMotionValue, useMotionValueEvent, useReducedMotion } from 'motion/react'
 import { ART, ITEMS, SENDER, type GiftItem } from '../../../data'
 import { haptic, sfx, startWater } from '../../shared/feedback'
@@ -15,7 +15,8 @@ import { Button } from './ui'
 
 /**
  * Variation 4 · "Grow & collect": V1's gardening game + V3's reward loop + V3's ending.
- *  grow    → press and hold to water; a seedling grows out of the heart box in stages (V1)
+ *  grow    → one tap and it waters itself: the can pours and a seedling grows out of the heart box in stages,
+ *            the meter fills and the notes climb (V1's look, auto-played; Ruby: tap instead of hold)
  *  bloom   → at 100% the lid pops, flowers bloom behind the box and the gifts pop up inside it (V1)
  *  harvest → the gifts pulse: tap them (or Collect all) to collect
  *  collect → each gift jumps out as a face-down reward card, flips face-up with confetti, then flies into
@@ -25,7 +26,7 @@ import { Button } from './ui'
  */
 type Mode = 'grow' | 'bloom' | 'harvest' | 'collect' | 'tag' | 'read'
 
-const HOLD_MS = 2000
+const WATER_MS = 2400 // one tap waters the gift all the way to the bloom
 const RUNGS = 8
 const clamp = (min: number, v: number, max: number) => Math.max(min, Math.min(v, max))
 
@@ -37,9 +38,8 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
   const reduced = useReducedMotion() ?? false
   const giftPx = clamp(220, Math.min(w * 0.66, h * 0.4), 420)
   const [mode, setMode] = useState<Mode>('grow')
-  const [holding, setHolding] = useState(false)
+  const [watering, setWatering] = useState(false)
   const [bucket, setBucket] = useState(0) // progress in 5% steps, for copy + a11y
-  const [nudge, setNudge] = useState(0)
   const [stored, setStored] = useState(0)
   const [flights, setFlights] = useState<Flight[] | null>(null)
   const [cphase, setCphase] = useState(0) // collect: 0 out of the box · 1 flipped · 2 flying to the basket
@@ -48,10 +48,10 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
 
   const modeRef = useRef(mode)
   modeRef.current = mode
-  const holdingRef = useRef(false)
+  const wateringRef = useRef(false)
   const rung = useRef(0)
   const water = useRef<{ stop(): void } | null>(null)
-  const pressedAt = useRef(0)
+  const wateredAt = useRef(0)
   const bloomedAt = useRef(0)
   const skipArmed = useRef(false)
   const bagRef = useRef<HTMLDivElement | null>(null)
@@ -70,8 +70,9 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
   )
 
   const bloom = useCallback(() => {
-    holdingRef.current = false
-    setHolding(false)
+    if (modeRef.current !== 'grow') return
+    wateringRef.current = false
+    setWatering(false)
     water.current?.stop()
     water.current = null
     bloomedAt.current = performance.now()
@@ -87,13 +88,13 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     }, reduced ? 700 : 1900)
   }, [reduced])
 
-  // While holding: grow. Releasing keeps the progress (forgiving), so she can water in bursts.
+  // While watering: grow, on its own, all the way to the bloom.
   useEffect(() => {
-    if (!holding || mode !== 'grow') return
+    if (!watering || mode !== 'grow') return
     let raf = 0
     let last = performance.now()
     const tick = (now: number) => {
-      const p = Math.min(1, progress.get() + (now - last) / HOLD_MS)
+      const p = Math.min(1, progress.get() + (now - last) / WATER_MS)
       last = now
       progress.set(p)
       if (p >= 1) return bloom()
@@ -101,7 +102,7 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [holding, mode, progress, bloom])
+  }, [watering, mode, progress, bloom])
 
   // Each rung of growth: a rising note, a stronger tick, and a little squash of the box.
   useMotionValueEvent(progress, 'change', (p) => {
@@ -117,25 +118,23 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     setBucket((prev) => (prev === b ? prev : b))
   })
 
-  const press = useCallback(() => {
-    if (modeRef.current !== 'grow' || holdingRef.current) return
-    holdingRef.current = true
-    setHolding(true)
-    pressedAt.current = performance.now()
+  /** One tap: the can tips and pours by itself until the gift blooms. */
+  const startWatering = useCallback(() => {
+    if (modeRef.current !== 'grow' || wateringRef.current) return
+    wateringRef.current = true
+    setWatering(true)
+    wateredAt.current = performance.now()
     water.current = startWater()
     haptic.light()
   }, [])
-  const release = useCallback(() => {
-    if (!holdingRef.current) return
-    holdingRef.current = false
-    setHolding(false)
-    water.current?.stop()
-    water.current = null
-    if (performance.now() - pressedAt.current < 260 && progress.get() < 1) {
-      setNudge((n) => n + 1)
-      sfx.boing()
-    }
-  }, [progress])
+  /** Another tap while it waters skips ahead to the bloom (ignoring an accidental double-tap). */
+  const growNow = useCallback(() => {
+    if (modeRef.current !== 'grow' || !wateringRef.current) return
+    if (performance.now() - wateredAt.current < 450) return
+    progress.set(1)
+    bloom()
+  }, [progress, bloom])
+  const tapGrow = useCallback(() => (wateringRef.current ? growNow() : startWatering()), [growNow, startWatering])
 
   /** Collect: the gifts jump out of the box as reward cards, flip, and fly into the storage basket. */
   const collect = useCallback(() => {
@@ -205,7 +204,7 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     haptic.medium()
   }, [])
 
-  // Keyboard: hold Space/Enter to water; Enter collects, opens the tag, continues.
+  // Keyboard: Space/Enter waters, skips ahead, collects, opens the tag, continues.
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key !== ' ' && e.key !== 'Enter') return
@@ -213,33 +212,15 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
       e.preventDefault()
       if (e.repeat) return
       const m = modeRef.current
-      if (m === 'grow') press()
+      if (m === 'grow') tapGrow()
       else if (m === 'harvest') collect()
       else if (m === 'collect') fastCollect()
       else if (m === 'tag') openTag()
       else if (m === 'bloom' && performance.now() - bloomedAt.current > 700) onDone(true)
     }
-    const up = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Enter') release()
-    }
     window.addEventListener('keydown', down)
-    window.addEventListener('keyup', up)
-    return () => {
-      window.removeEventListener('keydown', down)
-      window.removeEventListener('keyup', up)
-    }
-  }, [press, release, collect, fastCollect, openTag, onDone])
-
-  const holdHandlers = {
-    onPointerDown: (e: RPointerEvent<HTMLElement>) => {
-      e.currentTarget.setPointerCapture?.(e.pointerId)
-      press()
-    },
-    onPointerUp: release,
-    onPointerCancel: release,
-    onLostPointerCapture: release,
-    onContextMenu: (e: { preventDefault(): void }) => e.preventDefault(),
-  }
+    return () => window.removeEventListener('keydown', down)
+  }, [tapGrow, collect, fastCollect, openTag, onDone])
 
   const p = bucket / 20
   const grown = mode !== 'grow'
@@ -250,7 +231,7 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     : p === 0
       ? 'You got a gift!'
       : p < 0.4
-        ? 'Keep watering…'
+        ? 'Watering…'
         : p < 0.8
           ? "It's sprouting!"
           : 'Almost there!'
@@ -264,7 +245,8 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
       }}
       onClick={() => {
         const m = modeRef.current
-        if (m === 'bloom' && skipArmed.current) onDone(true)
+        if (m === 'grow' && wateringRef.current) growNow()
+        else if (m === 'bloom' && skipArmed.current) onDone(true)
         else if (m === 'collect' && skipArmed.current) fastCollect()
         else if (m === 'tag') openTag()
       }}
@@ -313,12 +295,12 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
         <div className="gift-area" style={{ width: giftPx }}>
           <div
             className={`gift-float grow-target${mode === 'grow' ? ' grow-target--on' : ''}${mode === 'harvest' ? ' grow-target--collect' : ''}`}
-            {...(mode === 'grow' ? holdHandlers : {})}
             onClick={
-              mode === 'harvest'
+              mode === 'harvest' || mode === 'grow'
                 ? (e) => {
                     e.stopPropagation()
-                    collect()
+                    if (mode === 'grow') tapGrow()
+                    else collect()
                   }
                 : undefined
             }
@@ -348,7 +330,7 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
                 />
               )}
             </AnimatePresence>
-            <AnimatePresence>{mode === 'grow' && <WateringCan key="can" pouring={holding} />}</AnimatePresence>
+            <AnimatePresence>{mode === 'grow' && <WateringCan key="can" pouring={watering} />}</AnimatePresence>
             {mode === 'bloom' && !reduced && <Burst size={giftPx} />}
             <AnimatePresence>{mode === 'tag' && <HangingTag key="tag" onOpen={openTag} />}</AnimatePresence>
           </div>
@@ -379,23 +361,22 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
             <motion.div key="grow" className="bottom-inner grow-controls" exit={{ opacity: 0, y: 14, transition: { duration: 0.2 } }}>
               <GrowMeter progress={progress} />
               <motion.button
-                key={nudge}
                 type="button"
-                className={`btn btn--primary hold-btn${holding ? ' hold-btn--on' : ''}`}
-                aria-label="Hold to water the gift"
-                {...holdHandlers}
-                onClick={(e) => e.stopPropagation()}
-                animate={nudge ? { x: [0, -8, 7, -5, 3, 0] } : { x: 0 }}
-                transition={{ duration: 0.4 }}
+                className={`btn btn--primary hold-btn${watering ? ' hold-btn--on' : ''}`}
+                aria-label={watering ? 'Watering the gift. Tap to skip ahead' : 'Water the gift'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  tapGrow()
+                }}
                 whileTap={{ scale: 0.97, y: 2 }}
               >
                 <CanIcon />
-                <span>{holding ? 'Watering…' : nudge ? 'Press and hold' : 'Hold to water'}</span>
+                <span>{watering ? 'Watering…' : 'Water it'}</span>
               </motion.button>
             </motion.div>
           )}
           {mode === 'bloom' && (
-            <motion.p key="skip" className="skip-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.6 }}>
+            <motion.p key="skip" className="skip-hint" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.6 } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
               Tap anywhere to skip
             </motion.p>
           )}
@@ -415,7 +396,7 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
             </motion.div>
           )}
           {mode === 'collect' && (
-            <motion.p key="added" className="tap-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.8 }}>
+            <motion.p key="added" className="tap-hint" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.8 } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
               Adding to your garden storage…
             </motion.p>
           )}
