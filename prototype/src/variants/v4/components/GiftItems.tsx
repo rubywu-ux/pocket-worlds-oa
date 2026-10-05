@@ -7,8 +7,9 @@ import { ITEMS, type GiftItem } from '../../../data'
  * `badge` puts the ×N right on the gift's top-right corner (measured from the art's visible bounds).
  */
 const SPOTS: Record<string, { left: string; top: string; width: string; badge: { left: string; top: string } }> = {
-  boba: { left: '6%', top: '27%', width: '50%', badge: { left: '64%', top: '12%' } },
-  bouquet: { left: '42%', top: '21%', width: '54%', badge: { left: '62%', top: '8%' } },
+  // fitted to the symmetric open box (box-open.webp)
+  boba: { left: '9%', top: '33%', width: '46%', badge: { left: '64%', top: '10%' } },
+  bouquet: { left: '45%', top: '31%', width: '47%', badge: { left: '62%', top: '6%' } },
 }
 
 /** The gifts inside the open box. `instant`: already sitting there (final layout), no pop. */

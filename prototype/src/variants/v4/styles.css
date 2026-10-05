@@ -1910,3 +1910,7 @@ img {
     animation: none;
   }
 }
+/* the symmetric open box sits a little lower than the old one: bring the big flower down to meet it */
+.app--v4 .flower--main {
+  top: 3%;
+}

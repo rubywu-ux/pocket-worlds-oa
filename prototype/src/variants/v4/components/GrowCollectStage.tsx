@@ -21,10 +21,10 @@ import { Button } from './ui'
  *  harvest → the gifts pulse: tap them (or Collect all) to collect
  *  collect → each gift jumps out as a face-down reward card, flips face-up with confetti, then flies into
  *            the garden-storage basket, which counts up (V3)
- *  tag     → Irene's letter swings down off the box like a gift tag (V1)
- *  read    → tap it: the tag flips up and the note unrolls; Continue → the "Say thanks" ending (V3)
+ *  read    → as the gifts fly into storage, Irene's letter pops up by itself, flips up and the note unrolls,
+ *            no tap needed (Ruby: fewer steps); Continue → the "Say thanks" ending (V3)
  */
-type Mode = 'grow' | 'bloom' | 'harvest' | 'collect' | 'tag' | 'read'
+type Mode = 'grow' | 'bloom' | 'harvest' | 'collect' | 'read'
 
 const WATER_MS = 2400 // one tap waters the gift all the way to the bloom
 const RUNGS = 8
@@ -169,6 +169,8 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
       sfx.ding()
     }, t.flip + 420)
     later(() => setCphase(2), t.fly)
+    // the letter comes out with the gifts: the note opens on its own while they fly into storage
+    later(() => setMode('read'), t.fly + 150)
     let total = 0
     ITEMS.forEach((it, i) =>
       later(() => {
@@ -180,8 +182,6 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     )
     later(() => {
       setFlights(null)
-      setMode('tag')
-      sfx.paper()
       haptic.success()
     }, t.done)
   }, [w, h, reduced])
@@ -192,19 +192,12 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
     clearTimers()
     setFlights(null)
     setStored(ITEMS.reduce((n, it) => n + it.qty, 0))
-    setMode('tag')
+    setMode('read')
     sfx.collect(2)
     haptic.medium()
   }, [])
 
-  const openTag = useCallback(() => {
-    if (modeRef.current !== 'tag') return
-    setMode('read')
-    sfx.tap()
-    haptic.medium()
-  }, [])
-
-  // Keyboard: Space/Enter waters, skips ahead, collects, opens the tag, continues.
+  // Keyboard: Space/Enter waters, skips ahead, collects; Continue is a button.
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key !== ' ' && e.key !== 'Enter') return
@@ -215,17 +208,16 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
       if (m === 'grow') tapGrow()
       else if (m === 'harvest') collect()
       else if (m === 'collect') fastCollect()
-      else if (m === 'tag') openTag()
       else if (m === 'bloom' && performance.now() - bloomedAt.current > 700) onDone(true)
     }
     window.addEventListener('keydown', down)
     return () => window.removeEventListener('keydown', down)
-  }, [tapGrow, collect, fastCollect, openTag, onDone])
+  }, [tapGrow, collect, fastCollect, onDone])
 
   const p = bucket / 20
   const grown = mode !== 'grow'
   const giftsInBox = mode === 'bloom' || mode === 'harvest'
-  const showBag = mode === 'harvest' || mode === 'collect' || mode === 'tag' || mode === 'read'
+  const showBag = mode === 'harvest' || mode === 'collect' || mode === 'read'
   const title = grown
     ? `A gift from ${SENDER.name}!`
     : p === 0
@@ -248,7 +240,6 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
         if (m === 'grow' && wateringRef.current) growNow()
         else if (m === 'bloom' && skipArmed.current) onDone(true)
         else if (m === 'collect' && skipArmed.current) fastCollect()
-        else if (m === 'tag') openTag()
       }}
       exit={{ opacity: 0, transition: { duration: 0.3 } }}
     >
@@ -332,7 +323,6 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
             </AnimatePresence>
             <AnimatePresence>{mode === 'grow' && <WateringCan key="can" pouring={watering} />}</AnimatePresence>
             {mode === 'bloom' && !reduced && <Burst size={giftPx} />}
-            <AnimatePresence>{mode === 'tag' && <HangingTag key="tag" onOpen={openTag} />}</AnimatePresence>
           </div>
         </div>
 
@@ -400,17 +390,12 @@ export function GrowCollectStage({ onDone }: { onDone: (skipped: boolean) => voi
               Adding to your garden storage…
             </motion.p>
           )}
-          {mode === 'tag' && (
-            <motion.p key="tag" className="tap-hint" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.7 }}>
-              <span className="tap-dot" /> Tap the tag to read {SENDER.name}'s note
-            </motion.p>
-          )}
         </AnimatePresence>
       </div>
 
       {/* the reward moment: cards out of the box → flip → into storage */}
       <AnimatePresence>
-        {mode === 'collect' && flights && (
+        {(mode === 'collect' || mode === 'read') && flights && (
           <motion.div key="collect" className="collect-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
             <motion.div
               className="collect-dim"
@@ -494,58 +479,26 @@ function CollectCard({ flight, index, cw, cphase }: { flight: Flight; index: num
   )
 }
 
-function HangingTag({ onOpen }: { onOpen: () => void }) {
-  return (
-    <motion.div
-      className="hang"
-      initial={{ y: '40%', scale: 0.3, opacity: 0, rotate: 0 }}
-      animate={{ y: '0%', scale: 1, opacity: 1, rotate: [0, 14, -9, 6, -3, 0] }}
-      transition={{
-        y: { type: 'spring', stiffness: 220, damping: 14 },
-        scale: { type: 'spring', stiffness: 260, damping: 16 },
-        opacity: { duration: 0.15 },
-        rotate: { duration: 1.6, ease: 'easeOut', delay: 0.15 },
-      }}
-      exit={{ opacity: 0, transition: { duration: 0.01 } }}
-      style={{ originX: 0.5, originY: 0 }}
-    >
-      <div className="hang-sway">
-        <span className="hang-string" />
-        <span className="hang-knot" />
-        <Letter
-          layoutId="tag"
-          role="button"
-          aria-label={`Open the letter from ${SENDER.name}`}
-          tabIndex={0}
-          className="letter--tappable hang-letter"
-          onClick={(e) => {
-            e.stopPropagation()
-            onOpen()
-          }}
-        />
-      </div>
-    </motion.div>
-  )
-}
-
-/** The tag lifts to the center, flips up, and the note unrolls beneath it. */
+/** Irene's letter pops up, flips up, and the note unrolls beneath it: all on its own. */
 function UnrollOverlay({ w, onContinue }: { w: number; onContinue: () => void }) {
   const cardW = Math.min(w * 0.88, 520)
   const letterH = (cardW * 189) / 355
   const noteH = (cardW * 119) / 355
-  const [stage, setStage] = useState(0) // 0 tag centered · 1 unrolling · 2 sticker + continue
+  const [stage, setStage] = useState(0) // 0 letter pops up · 1 unrolling · 2 sticker + continue
   useEffect(() => {
+    sfx.paper()
+    sfx.whoosh(true, 0.05)
     const a = window.setTimeout(() => {
       setStage(1)
       sfx.paper()
       haptic.light()
-    }, 600)
+    }, 1000)
     const b = window.setTimeout(() => {
       setStage(2)
       sfx.pop(6)
       sfx.ding()
       haptic.medium()
-    }, 1500)
+    }, 1900)
     return () => {
       clearTimeout(a)
       clearTimeout(b)
@@ -587,11 +540,11 @@ function UnrollOverlay({ w, onContinue }: { w: number; onContinue: () => void })
           {/* the tag flips up and away from the same top edge */}
           <motion.div
             className="unroll-tag"
-            initial={false}
-            animate={stage >= 1 ? { rotateX: 100, opacity: 0, y: -12 } : { rotateX: 0, opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: 'easeIn' }}
+            initial={{ opacity: 0, y: 120, scale: 0.45, rotate: -8 }}
+            animate={stage >= 1 ? { rotateX: 100, opacity: 0, y: -12, scale: 1, rotate: 0 } : { rotateX: 0, opacity: 1, y: 0, scale: 1, rotate: 0 }}
+            transition={stage >= 1 ? { duration: 0.45, ease: 'easeIn' } : { type: 'spring', stiffness: 260, damping: 17, opacity: { duration: 0.15 } }}
           >
-            <Letter layoutId="tag" />
+            <Letter />
           </motion.div>
         </div>
       </div>

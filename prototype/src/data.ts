@@ -8,8 +8,11 @@ import matchaBoba from './assets/matcha-boba.webp'
 import bouquet from './assets/bouquet.webp'
 import boxBase from './assets/box-base.webp'
 import boxFront from './assets/box-base-front.webp'
+// Cleaner, symmetric open heart box (tools/make-open-heart-box.py). Used by V4.
+import boxOpen from './assets/box-open.webp'
+import boxOpenFront from './assets/box-open-front.webp'
 
-export const ART = { giftBox, boxBase, boxFront, envelope, sticker }
+export const ART = { giftBox, boxBase, boxFront, boxOpen, boxOpenFront, envelope, sticker }
 
 export const SENDER = { name: 'Irene', avatar: irene }
 export const RECIPIENT = { name: 'Sage' }
@@ -29,4 +32,4 @@ export const NOTE = {
 }
 
 /** Everything the animation shows, so it can be fetched before the first tap. */
-export const ALL_ART = [ART.giftBox, ART.boxBase, ART.boxFront, ART.envelope, ART.sticker, SENDER.avatar, ...ITEMS.map((i) => i.img)]
+export const ALL_ART = [ART.giftBox, ART.boxBase, ART.boxFront, ART.boxOpen, ART.boxOpenFront, ART.envelope, ART.sticker, SENDER.avatar, ...ITEMS.map((i) => i.img)]

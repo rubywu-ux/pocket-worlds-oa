@@ -146,7 +146,7 @@ export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = fals
               exit={{ y: '0%', opacity: 0, transition: { opacity: { delay: 0.45, duration: 0.15 }, y: { duration: 0.3 } } }}
               transition={BOX_T[mode]}
             >
-              <img src={ART.boxBase} className="box-img" alt="" draggable={false} />
+              <img src={ART.boxOpen} className="box-img" alt="" draggable={false} />
             </motion.div>
           )}
           {bloomed && (
@@ -168,7 +168,7 @@ export function Gift({ mode, layoutId, onActivate, label, enterFromClosed = fals
               exit={{ y: '0%', opacity: 0, transition: { opacity: { delay: 0.45, duration: 0.15 }, y: { duration: 0.3 } } }}
               transition={BOX_T[mode]}
             >
-              <img src={ART.boxFront} className="box-img" alt="" draggable={false} />
+              <img src={ART.boxOpenFront} className="box-img" alt="" draggable={false} />
             </motion.div>
           )}
         </AnimatePresence>
