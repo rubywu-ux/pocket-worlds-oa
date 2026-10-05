@@ -45,29 +45,14 @@ Hard requirements:
 - Fonts are self-hosted via @fontsource (Google Fonts is blocked in the sandbox).
 - Screenshot QA: Playwright with `executablePath: /opt/pw-browsers/chromium-1194/chrome-linux/chrome` against `npx vite preview --port 4173`.
 
-## Next steps (proposed plan, 2026-10-04)
+## Next steps (as of 2026-10-04, end of Ruby's first Claude account session)
 
-1. **Study the provided screens.** Pull the Gift Shop and Reception frames from Figma (the connector works on the original account) and note the visual language: color, type, radii, buttons, illustration style, tone of copy, Figma variables.
-2. **Define the gift model.** Decide what a gift contains: the item, its wrapping, the note, the sender, and the 2–3 things customized in Part 2. Parts 2 and 4 have to agree on this, so settle it first.
-3. **Sketch 2–3 opening concepts for Part 4.** Each one answers the three questions. Ruby picks one.
-4. **Pick the tool and build Part 4** in `prototype/`. Build order:
-   - static screen
-   - opening interaction
-   - note reveal
-   - after-opening connection
-   - edge cases (tap spam, skip, replay, reset)
-   - mobile + desktop
-   - deploy
+The prototype is feature-complete per `prototype/SPEC.md` and live. Remaining work:
 
-   Commit after each step.
-5. **Design Parts 2 and 3 in Figma:** 3 genuinely different wireframes for Customization & Recipient, its final design, then the Checkout & Send final design built from their wireframe and kept in the game's world.
-6. **Assemble the Figma file:**
-   - flows left to right
-   - portfolio + prototype links at the top
-   - hours stated
-   - decision notes
-   - AI-use disclosure
-7. **QA and submit.** Click-and-break the prototype on a phone, open the link logged out, then run the README checklist.
+1. **Ruby reviews the live prototype** (phone + desktop) and gives any final animation/visual tweaks. Make each change, screenshot-check it (Playwright, see Prototype status), commit, push (auto-deploys), and pull into the local folder.
+2. **Figma file:** the "Prototype Link" text on the FINAL page isn't hyperlinked yet. Ruby should link it to https://rubywu-ux.github.io/pocket-worlds-oa/ (portfolio link is already done). Confirm flows are laid out left to right and the 3 Customization wireframes are in the file (likely on the "Screen Iterations" page; not yet verified).
+3. **README AI-use log:** help Ruby fill the "Kept / changed / overruled" column. Her direction/overrules so far: chose React + Motion; letter card slips out of the envelope and fades into the note on tap (replaced the unfolding note); "Take a peek" heading without avatar; clean rounded-square Irene avatar; Sweetheart Box is Irene's side only; unboxing with gifts popping out; gifts must sit inside the box and be emphasized; note folds back to its closed letter; hover bug report. Claude's own call she kept: whole heart instead of a split heart (split read as heartbreak).
+4. **Final QA and submit:** click-and-break the live link on a real phone, open it logged out / in a private window, run the README checklist, add the deadline to this file.
 
 ## Working conventions
 
@@ -83,15 +68,18 @@ Hard requirements:
 Paste this into a new Claude session (any account) with the Pocket Worlds folder linked:
 
 ```
-I'm continuing my Pocket Worlds Product Designer take-home from another session. All context is in my public GitHub repo: https://github.com/rubywu-ux/pocket-worlds-oa (my local copy is the Pocket Worlds folder I linked: iCloud Drive › Ruby Workspace › Pocket Worlds).
+I'm continuing my Pocket Worlds Product Designer take-home from another Claude account. Everything is in my public GitHub repo: https://github.com/rubywu-ux/pocket-worlds-oa (local copy: the Pocket Worlds folder I linked, iCloud Drive › Ruby Workspace › Pocket Worlds).
 
-1. Read CLAUDE.md and README.md first. CLAUDE.md has the decisions so far and the next steps.
-2. Check whether GitHub and Figma are connected for this account. If not, tell me before you need them.
-3. Pick up from "Next steps" in CLAUDE.md, and ask me before any big design decision.
-4. Before we stop, or if you're running low on usage, update "Next steps" and "Session log" in CLAUDE.md, then commit and push so I can continue in my other account.
+The Reception + Opening prototype (React + Motion + Vite) is live at https://rubywu-ux.github.io/pocket-worlds-oa/ and auto-deploys to GitHub Pages on every push to main. My Figma file: https://www.figma.com/design/MRDdpLZtFAk8viy9ZWGRxf/Take-Home?node-id=9146-1156
+
+1. Read CLAUDE.md, README.md and prototype/SPEC.md first. CLAUDE.md has the decisions, code map, environment tips and next steps; SPEC.md is my direction for the prototype.
+2. Check whether GitHub (with the Claude GitHub app on this repo) and Figma are connected for this account. If not, tell me before you need them.
+3. Pick up from "Next steps" in CLAUDE.md. I direct the design: ask me before any big design decision, and record my direction in SPEC.md.
+4. Commit and push after every meaningful change, pull the changes into my local folder, and check the live site after each deploy.
+5. Before we stop, or if you're running low on usage, update "Next steps" and "Session log" in CLAUDE.md, then commit and push so I can continue in another account.
 ```
 
 ## Session log
 
 - 2026-10-04: Created the repo and linked it to the local folder. Wrote the README (brief summary, checklist, AI-use and hours logs). Compared prototype tool options (see Decisions). Added this handoff file.
-- 2026-10-04: Ruby wrote her prototype direction (now `prototype/SPEC.md`). Built the full prototype and the Pages deploy workflow. Changed the first bloom concept (heart split in two) to flowers growing out of a whole heart, because a split heart reads as heartbreak. Pages switched on; live at https://rubywu-ux.github.io/pocket-worlds-oa/. Swapped in Ruby's 4× art (WebP). Synced to Ruby's updated FINAL screens (Sweetheart Box shown, then removed per Ruby: Irene's side only); unboxing added per Ruby; per Ruby: gifts sit inside the box and are emphasized, note folds back to its closed letter after reading, fixed hover bug (envelope swapped behind the box: `.gift { isolation: isolate }`); on phones the reply buttons are pinned over a bottom scrim so they stay visible. Per Ruby: the letter card slips out of the envelope first and fades into the note on tap (see SPEC §2). Per Ruby: replaced Irene's avatar with her clean rounded-square version (no dashed frame), shown as a rounded square, and enlarged it in the idle "from Irene" line and the "Irene left you a note" heading.
+- 2026-10-04 (session 1, account 1): Ruby wrote her prototype direction (now `prototype/SPEC.md`). Built the full prototype and the Pages deploy workflow. Changed the first bloom concept (heart split in two) to flowers growing out of a whole heart, because a split heart reads as heartbreak. Pages switched on; live at https://rubywu-ux.github.io/pocket-worlds-oa/. Swapped in Ruby's 4× art (WebP). Synced to Ruby's updated FINAL screens (Sweetheart Box shown, then removed per Ruby: Irene's side only); unboxing added per Ruby; per Ruby: gifts sit inside the box and are emphasized, note folds back to its closed letter after reading, fixed hover bug (envelope swapped behind the box: `.gift { isolation: isolate }`); on phones the reply buttons are pinned over a bottom scrim so they stay visible. Per Ruby: the letter card slips out of the envelope first and fades into the note on tap (see SPEC §2). Per Ruby: replaced Irene's avatar with her clean rounded-square version (no dashed frame), shown as a rounded square, and enlarged it in the idle "from Irene" line and the "Irene left you a note" heading.
