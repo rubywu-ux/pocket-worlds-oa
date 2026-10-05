@@ -132,9 +132,6 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
             <Button icon={<GiftIcon />} onClick={() => show(`Opening the Picnic Gift Shop with ${SENDER.name} as your recipient`)}>
               Send a gift back
             </Button>
-            <Button variant="secondary" icon={<SproutIcon />} onClick={() => show(`Walking over to ${SENDER.name}'s garden…`)}>
-              Visit {SENDER.name}'s garden
-            </Button>
           </motion.div>
         </div>
       </div>

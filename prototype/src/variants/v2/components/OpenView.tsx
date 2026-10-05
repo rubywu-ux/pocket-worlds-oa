@@ -4,7 +4,7 @@ import { ITEMS, SENDER } from '../../../data'
 import { haptic, sfx } from '../../shared/feedback'
 import { Note } from './Note'
 import { Blanket, BOX, TumbleItems } from './PicnicParts'
-import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
+import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, Toast } from './ui'
 
 type OpenViewProps = {
   skipped: boolean
@@ -138,9 +138,6 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
           >
             <Button icon={<GiftIcon />} onClick={() => show(`Opening the Picnic Gift Shop with ${SENDER.name} as your recipient`)}>
               Send a gift back
-            </Button>
-            <Button variant="secondary" icon={<SproutIcon />} onClick={() => show(`Walking over to ${SENDER.name}'s garden…`)}>
-              Visit {SENDER.name}'s garden
             </Button>
           </motion.div>
         </div>

@@ -4,7 +4,7 @@ import { ART, ITEMS, SENDER } from '../../../data'
 import { haptic, sfx } from '../../shared/feedback'
 import { Note } from './Note'
 import { OfferCell } from './RewardParts'
-import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
+import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, Toast } from './ui'
 
 type OpenViewProps = {
   skipped: boolean
@@ -179,54 +179,51 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
 
           <Note layoutId="note" className="note--card" fold="open" sticker="on" />
 
-          {/* Say thanks: one-tap sticker reactions that fly to Irene */}
-          <motion.div className="thanks" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <motion.img
-              key={bump}
-              ref={avatarRef}
-              src={SENDER.avatar}
-              alt=""
-              className="thanks-avatar"
-              initial={{ scale: bump ? 1.3 : 1 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 10 }}
-            />
-            <div className="thanks-copy">
-              <span className="thanks-title">Say thanks</span>
-              <span className="thanks-sub">{sent.length ? `${SENDER.name} will see your reaction` : `Send ${SENDER.name} a sticker`}</span>
-            </div>
-            <div className="thanks-btns">
-              {REACTIONS.map((r) => (
-                <motion.button
-                  key={r.id}
-                  type="button"
-                  className={`react${sent.includes(r.id) ? ' react--sent' : ''}`}
-                  aria-label={`Send “${r.label}” to ${SENDER.name}`}
-                  title={r.label}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    react(r, e.currentTarget)
-                  }}
-                  whileTap={{ scale: 0.85 }}
-                  whileHover={{ y: -2 }}
-                >
-                  {r.icon}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-
           <motion.div
             className="actions"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 26 }}
           >
+            {/* Say thanks: one-tap sticker reactions that fly to Irene. It lives in the actions area so it stays
+                in view on phones, where the actions are pinned to the bottom of the screen. */}
+            <motion.div className="thanks" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <motion.img
+                key={bump}
+                ref={avatarRef}
+                src={SENDER.avatar}
+                alt=""
+                className="thanks-avatar"
+                initial={{ scale: bump ? 1.3 : 1 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 10 }}
+              />
+              <div className="thanks-copy">
+                <span className="thanks-title">Say thanks</span>
+                <span className="thanks-sub">{sent.length ? `${SENDER.name} will see your reaction` : `Send ${SENDER.name} a sticker`}</span>
+              </div>
+              <div className="thanks-btns">
+                {REACTIONS.map((r) => (
+                  <motion.button
+                    key={r.id}
+                    type="button"
+                    className={`react${sent.includes(r.id) ? ' react--sent' : ''}`}
+                    aria-label={`Send “${r.label}” to ${SENDER.name}`}
+                    title={r.label}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      react(r, e.currentTarget)
+                    }}
+                    whileTap={{ scale: 0.85 }}
+                    whileHover={{ y: -2 }}
+                  >
+                    {r.icon}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
             <Button icon={<GiftIcon />} onClick={() => show(`Opening the Picnic Gift Shop with ${SENDER.name} as your recipient`)}>
               Send a gift back
-            </Button>
-            <Button variant="secondary" icon={<SproutIcon />} onClick={() => show(`Walking over to ${SENDER.name}'s garden…`)}>
-              Visit {SENDER.name}'s garden
             </Button>
           </motion.div>
         </div>

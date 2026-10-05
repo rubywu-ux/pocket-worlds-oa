@@ -33,7 +33,9 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 - The note lives **underneath the gift box**, which is revealed with the listed items.
 - **Updated 2026-10-04:** after opening, the **gift box goes back to its closed, formal state** (the lid comes back on), with the opened items listed and the note underneath.
 - The note carries the **1 sticker** chosen during customization. The sticker **rocks subtly**, as if to say "I'm here, I'm a cute sticker on your note!"
-- Buttons: **Send a gift back** and **Visit Irene's garden**.
+- Buttons: **Send a gift back** ~~and **Visit Irene's garden**~~.
+- **Updated 2026-10-04 (Ruby): "Visit Irene's garden" is removed everywhere.** Gifts are received while Sage is already in her own garden, so a visit button there doesn't make sense. The connection after opening is **Send a gift back** (plus V3/V4's **Say thanks** sticker reactions).
+- **Updated 2026-10-04 (Ruby): Say thanks must show on phones.** On phones it sits in the pinned bottom area, right above Send a gift back, so it's always in view; on tablet and desktop it stays above the button.
 - An **exit/close** button.
 
 ## 4. Edge cases (tapping repeatedly, skipping, replaying, resetting)
@@ -57,7 +59,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 Ruby asked for three variations with their own links that **explore different animation styles and interactive flows, completely different from each other**, keeping the design system as close as possible to Pocket Worlds' Highrise design language (the **Picnic Gift Shop**). She then asked for **sound effects too, using Duolingo's haptics and sound as the reference**. Claude proposed the three directions below; Ruby will review them and pick or refine.
 
 Shared across all three:
-- Same tokens and type as the main prototype (n850/n900, lime #70e51d CTA pill, Passion One titles with the dark text shadow, Parkinsans UI), the same art, the same gift (Matcha Boba ×2, Summertime Bouquet ×1, note with the boba sticker), and the same replies (Send a gift back / Visit Irene's garden), plus close, replay and reduced motion.
+- Same tokens and type as the main prototype (n850/n900, lime #70e51d CTA pill, Passion One titles with the dark text shadow, Parkinsans UI), the same art, the same gift (Matcha Boba ×2, Summertime Bouquet ×1, note with the boba sticker), and the same replies (Send a gift back), plus close, replay and reduced motion.
 - **Sound + haptics (Duolingo as the reference):**
   - Every tap answers with a soft bloop and a light tick.
   - While a moment builds, notes climb a C-major pentatonic ladder and the haptics grow stronger.
@@ -86,4 +88,4 @@ Ruby's direction: "combine V1 and V2: I like the gamified watering plants and no
 4. **Note (V1):** ~~the letter swings down off the box like a gift tag; tap it~~ **Updated (Ruby, 2026-10-04): fewer steps.** The letter comes out *with* the gifts: as the cards fly into storage, Irene's letter pops up by itself, flips up, and the note unrolls with its message; the sticker slaps on. No tap needed to open it; **Continue** still exits, as before.
    **Sound (Ruby, 2026-10-04):** no water-pouring noise when the watering starts, and no extra paper/whoosh when the note pops up (Claude had added that unasked). Ruby: don't add anything she didn't request.
    **Box (Ruby, 2026-10-04):** the open heart box "looked deformed". The old open box was traced from the closed box's outline (bow bumps, uneven rim). V4 now uses a clean, symmetric open heart box drawn in the same pinks and outline (`tools/make-open-heart-box.py` → `src/assets/box-open*.webp`), with the gifts re-fitted inside it.
-5. **Ending (V3):** "✓ Collected" gift card, "in your gift" list (Ruby: renamed from "in your storage"), the note with its rocking sticker, **Say thanks** sticker reactions that fly to Irene, Send a gift back / Visit Irene's garden.
+5. **Ending (V3):** "✓ Collected" gift card, "in your gift" list (Ruby: renamed from "in your storage"), the note with its rocking sticker, **Say thanks** sticker reactions that fly to Irene, Send a gift back.

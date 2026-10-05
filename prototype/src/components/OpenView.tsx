@@ -4,7 +4,7 @@ import { ITEMS, SENDER } from '../data'
 import { Gift } from './Gift'
 import { GiftItems } from './GiftItems'
 import { Note } from './Note'
-import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, SproutIcon, Toast } from './ui'
+import { Button, CloseIcon, GiftIcon, IconButton, ReplayIcon, Toast } from './ui'
 
 type OpenViewProps = {
   /** True when Sage skipped the animation: the box still pops open, just quickly. */
@@ -122,9 +122,6 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
           >
             <Button icon={<GiftIcon />} onClick={() => show(`Opening the Picnic Gift Shop with ${SENDER.name} as your recipient`)}>
               Send a gift back
-            </Button>
-            <Button variant="secondary" icon={<SproutIcon />} onClick={() => show(`Walking over to ${SENDER.name}'s garden…`)}>
-              Visit {SENDER.name}'s garden
             </Button>
           </motion.div>
         </div>

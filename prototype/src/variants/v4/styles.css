@@ -1961,3 +1961,14 @@ img {
     padding: 4px 8px;
   }
 }
+
+/* Say thanks sits inside the actions area (pinned to the bottom on phones). On wider screens, where the
+   actions are a row, it takes the full width above the button, as before. */
+.actions .thanks {
+  flex: 1 1 100%;
+}
+@media (min-width: 640px) {
+  .actions {
+    flex-wrap: wrap;
+  }
+}
