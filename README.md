@@ -38,6 +38,14 @@ The prototype should answer:
 | How is the note shown with the gift? | The envelope floats to the center and the letter (the "from: Irene / sending to: Sage" card from Checkout) slips out of it and waits under "Take a peek": "Tap the letter to open it." Tapping fades it into Irene's note ("Irene left you a note"), and her Matcha Boba sticker slaps on. After **Continue**, the note settles underneath the gift and its listed items, and the gift box closes back up into its formal state. The sticker keeps gently rocking: "I'm here!" |
 | Any further connection after opening? | **Send a gift back** (opens the gift shop with Irene as recipient) and **Visit Irene's garden**. |
 
+**Exploration variations** (for iterating on different animation approaches; the main link above stays the current pick):
+
+| Variation | Link | Approach |
+|---|---|---|
+| 1 | [rubywu-ux.github.io/pocket-worlds-oa/v1/](https://rubywu-ux.github.io/pocket-worlds-oa/v1/) | _starts as a copy of the main prototype; to be defined_ |
+| 2 | [rubywu-ux.github.io/pocket-worlds-oa/v2/](https://rubywu-ux.github.io/pocket-worlds-oa/v2/) | _starts as a copy of the main prototype; to be defined_ |
+| 3 | [rubywu-ux.github.io/pocket-worlds-oa/v3/](https://rubywu-ux.github.io/pocket-worlds-oa/v3/) | _starts as a copy of the main prototype; to be defined_ |
+
 **Things to try (and break)**
 
 - Tap anywhere during the animation to skip straight to the opened gift. A double-tap on Open in quick succession doesn't count as a skip.
@@ -89,6 +97,8 @@ The brief requires disclosing AI use. Log each meaningful use: the tool, what I 
 ├── prototype/                ← Reception + Opening prototype (React + Motion + Vite)
 │   ├── SPEC.md               ← my direction for the prototype
 │   ├── src/components/       ← Gift, Letter, Note, Stage (opening), OpenView, ClosedView
+│   ├── src/variants/v1–v3/   ← independent copies for exploring other animation approaches
+│   ├── v1/ v2/ v3/           ← the pages for each variation (/v1/, /v2/, /v3/)
 │   ├── src/assets/           ← art exported from my Figma file (+ the generated open-box base)
 │   └── tools/                ← script that builds the open box from the closed-box art
 └── .github/workflows/        ← deploys the prototype to GitHub Pages
