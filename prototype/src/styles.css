@@ -238,6 +238,9 @@ img {
 .gift {
   position: absolute;
   inset: 0;
+  /* Keep the box's internal layers (lid, front wall…) inside the gift, so the envelope beside it
+     never swaps from front to back when hover/tap adds a transform. */
+  isolation: isolate;
 }
 .gift--interactive {
   cursor: pointer;
