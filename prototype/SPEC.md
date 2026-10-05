@@ -73,3 +73,13 @@ Shared across all three:
 | After | Gift stays planted and in bloom | Box closed, gifts laid out on the blanket | Gifts collected to storage; one-tap sticker "thanks" reactions to Irene |
 | Skip | Skip pill; a fresh tap during the bloom | Skip pill; a fresh tap during the pop | Tap fast-forwards; Skip pill |
 | Picnic Gift Shop references | Dark UI, lime CTA, Duolingo-style meter | The banner art and its elliptical bottom edge with the title on it; the gingham blanket | The Offer Cell card (display + tab), the banner's confetti motifs |
+
+### V4 · Grow & collect (Ruby, 2026-10-04)
+
+Ruby's direction: "combine V1 and V2: I like the gamified watering plants and notecard pop up in V1. In V2, I like the reward system it has for the user. I also like the ending of the 'say thanks' page." The reward system and the "Say thanks" ending she pointed to (with a screenshot) are both from **V3** (Reward reveal), so V4 combines V1 + V3:
+
+1. **Grow (V1):** press and hold to water; the seedling grows in stages; Duolingo-style meter, rising notes, stronger haptics.
+2. **Bloom (V1):** at 100% the box blooms open with a fanfare; the gifts pop up inside it.
+3. **Collect (V3's reward loop):** "Tap the gifts to collect them" / **Collect all**. Each gift jumps out of the box as a face-down reward card (Offer Cell), flips face-up with confetti, then flies into the garden-storage basket (top left), which counts up to +3.
+4. **Note (V1):** the letter swings down off the box like a gift tag; tap it, it flips up and the note unrolls; the sticker slaps on; Continue.
+5. **Ending (V3):** "✓ Collected" gift card, "in your storage" list, the note with its rocking sticker, **Say thanks** sticker reactions that fly to Irene, Send a gift back / Visit Irene's garden.
