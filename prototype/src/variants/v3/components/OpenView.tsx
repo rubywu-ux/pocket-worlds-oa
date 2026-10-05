@@ -153,7 +153,7 @@ export function OpenView({ skipped, onReplay, onClose }: OpenViewProps) {
 
         <div className="open-details">
           <motion.h2 className="section-title" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
-            in your storage
+            in your gift
           </motion.h2>
           <ul className="item-list">
             {ITEMS.map((it, i) => (

@@ -82,4 +82,4 @@ Ruby's direction: "combine V1 and V2: I like the gamified watering plants and no
 2. **Bloom (V1):** at 100% the box blooms open with a fanfare; the gifts pop up inside it.
 3. **Collect (V3's reward loop):** "Tap the gifts to collect them" / **Collect all**. Each gift jumps out of the box as a face-down reward card (Offer Cell), flips face-up with confetti, then flies into the garden-storage basket (top left), which counts up to +3.
 4. **Note (V1):** the letter swings down off the box like a gift tag; tap it, it flips up and the note unrolls; the sticker slaps on; Continue.
-5. **Ending (V3):** "✓ Collected" gift card, "in your storage" list, the note with its rocking sticker, **Say thanks** sticker reactions that fly to Irene, Send a gift back / Visit Irene's garden.
+5. **Ending (V3):** "✓ Collected" gift card, "in your gift" list (Ruby: renamed from "in your storage"), the note with its rocking sticker, **Say thanks** sticker reactions that fly to Irene, Send a gift back / Visit Irene's garden.
