@@ -21,6 +21,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 
 - ~~The note unfolds out of the envelope in a smooth transition and is displayed dramatically for the user to read.~~ (original direction)
 - **Updated 2026-10-04:** when the envelope opens, the **letter** slips out first: the "from: Irene / sending to: Sage" card with the heart (same card as the Checkout screen). It waits for Sage to **tap it open**, then **fades** into the note itself, displayed for reading.
+- Heading above the letter: **"Take a peek"** (no avatar, since the letter already shows Irene's). The note keeps its "Irene left you a note" heading with the avatar.
 
 ## 3. After opening
 

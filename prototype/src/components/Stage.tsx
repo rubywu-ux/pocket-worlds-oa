@@ -182,7 +182,7 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
         : { y: 0, scale: 1, opacity: 1, rotate: 0 }
 
   const gap = Math.max(50, cardW * 0.12)
-  const heading = s >= 5 ? `${SENDER.name} left you a note` : `A letter from ${SENDER.name}`
+  const heading = s >= 5 ? `${SENDER.name} left you a note` : 'Take a peek'
   const headingY = s >= 5 ? -noteH / 2 - gap : -letterH / 2 - gap
 
   return (
@@ -213,7 +213,8 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
               exit={{ opacity: 0, y: headingY - 8, transition: { duration: 0.18 } }}
               transition={{ delay: s === 4 ? 0.35 : 0.1, type: 'spring', stiffness: 260, damping: 24 }}
             >
-              <img src={SENDER.avatar} alt="" />
+              {/* The letter already shows Irene's avatar, so the heading only carries it for the note */}
+              {s >= 5 && <img src={SENDER.avatar} alt="" />}
               {heading}
             </motion.p>
           )}
