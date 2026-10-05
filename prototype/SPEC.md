@@ -7,7 +7,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 **The gift** (from Ruby's Customization & Checkout designs):
 - Gift style: *sweetheart* (pink heart box, yellow ribbon) + envelope
 - Contents Sage receives: Matcha Boba ×2, Summertime Bouquet ×1. (The Sweetheart Box gift style appears only on Irene's side, at Checkout; Ruby, 2026-10-04.)
-- Note: light-green ruled note, "To: Sage", "So nice to see you on here again! Love your creations as always." — Irene
+- Note: light-green ruled note, "To: Sage" (no pencil icon, left-aligned with the message; Ruby, 2026-10-04), "So nice to see you on here again! Love your creations as always." — Irene
 - Sticker on the note: Matcha Boba (the "+1 sticker")
 - Postage: *lovely* (heart)
 
@@ -19,6 +19,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 - **Updated 2026-10-04:** show the **unboxing** of the box with the gifts popping out of it. When the gifts emerge, they get a **popping scale-in** motion.
 - **Updated 2026-10-04:** the gifts stay **inside** the box (not floating outside it), scaled to fit and sitting nicely in it. The gifts are the main point and should be emphasized.
 - At the start, the envelope must stay fixed in front of the box (no movement on hover).
+- **Updated 2026-10-04:** the gifts sit **naturally inside** the box (resting in it, bottoms hidden by the front wall). The **×2 / ×1** badges sit right on their own gift. The flowers bloom **behind** the box, not on top of it (less distracting).
 
 ## 2. Note reveal
 

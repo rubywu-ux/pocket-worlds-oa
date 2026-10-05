@@ -62,16 +62,6 @@ function NoteFace() {
       {LINES.map((t) => (
         <div key={t} className="note-line" style={{ top: cq(t) }} />
       ))}
-      <svg className="note-pencil" viewBox="0 0 24 24" aria-hidden>
-        <path
-          d="M4 20l1.2-4.6L15.8 4.8a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8 4 20z M13.8 6.8l3.4 3.4"
-          fill="none"
-          stroke="#000"
-          strokeWidth="1.6"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-      </svg>
       <p className="note-to">To: {NOTE.to}</p>
       <p className="note-msg">{NOTE.message}</p>
       <p className="note-from">- {NOTE.from}</p>

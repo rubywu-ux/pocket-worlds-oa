@@ -303,7 +303,7 @@ img {
   z-index: 1;
 }
 .gift-sublayer--bloom {
-  z-index: 3;
+  z-index: 1; /* behind the box: the flowers peek out from behind it */
 }
 .box-img {
   position: absolute;
@@ -421,8 +421,6 @@ img {
 }
 .qty-badge {
   position: absolute;
-  right: -2%;
-  top: 2%;
   z-index: 1;
   padding: 4px 10px;
   border-radius: 20px;
@@ -673,13 +671,6 @@ img {
   height: 1px;
   background: rgba(0, 0, 0, 0.06);
 }
-.note-pencil {
-  position: absolute;
-  left: 3.38cqw;
-  top: 4.79cqw;
-  width: 5.07cqw;
-  height: 5.07cqw;
-}
 .note-to,
 .note-from {
   position: absolute;
@@ -689,7 +680,7 @@ img {
   letter-spacing: 0.037cqw;
 }
 .note-to {
-  left: 9.86cqw;
+  left: 3.1cqw; /* aligned with the message text */
   top: 5.92cqw;
 }
 .note-msg {
