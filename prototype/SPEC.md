@@ -20,6 +20,7 @@ Ruby's direction for the Part 4 prototype (2026-10-04). This is the source of tr
 - **Updated 2026-10-04:** the gifts stay **inside** the box (not floating outside it), scaled to fit and sitting nicely in it. The gifts are the main point and should be emphasized.
 - At the start, the envelope must stay fixed in front of the box (no movement on hover).
 - **Updated 2026-10-04:** the gifts sit **naturally inside** the box (resting in it, bottoms hidden by the front wall). The **×2 / ×1** badges sit right on their own gift. The flowers bloom **behind** the box, not on top of it (less distracting).
+- **Updated 2026-10-04:** the floral bloom sits fully behind the box: one big flower opening up, **centered behind the box**, with the box in front of it.
 
 ## 2. Note reveal
 

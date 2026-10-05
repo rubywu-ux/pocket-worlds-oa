@@ -332,40 +332,21 @@ img {
   overflow: visible;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
 }
-.flower--main {
-  left: 33%;
-  top: -10%;
-  width: 34%;
-  height: 34%;
+/* The bloom behind the box: centered on the box (gift area center ≈ 50%, 46%) */
+.flower--halo {
+  left: -12%;
+  top: -18%;
+  width: 124%;
+  height: 124%;
   z-index: 2;
 }
-.flower--l {
-  left: 2%;
-  top: 0%;
-  width: 28%;
-  height: 28%;
-  z-index: 3;
-}
-.flower--r {
-  left: 70%;
-  top: -3%;
-  width: 26%;
-  height: 26%;
-  z-index: 3;
-}
-.top-leaf {
-  position: absolute;
+.flower--halo-back {
+  left: -22%;
+  top: -28%;
+  width: 144%;
+  height: 144%;
   z-index: 1;
-  width: 20%;
-  height: 34%;
-  top: -14%;
-  overflow: visible;
-}
-.top-leaf--l {
-  left: 18%;
-}
-.top-leaf--r {
-  left: 62%;
+  opacity: 0.9;
 }
 .base-leaf {
   position: absolute;

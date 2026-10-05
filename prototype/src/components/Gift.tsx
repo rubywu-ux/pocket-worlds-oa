@@ -266,7 +266,7 @@ const PALETTE: Record<FlowerVariant, { outer: [string, string, string]; inner: [
 }
 
 /** A glossy cartoon flower, colored from the sweetheart box and its ribbon. */
-function Flower({ variant, className, tilt = 0, delay, instant }: { variant: FlowerVariant; className: string; tilt?: number; delay: number; instant: boolean }) {
+function Flower({ variant, className, tilt = 0, delay, instant, originY = 0.85 }: { variant: FlowerVariant; className: string; tilt?: number; delay: number; instant: boolean; originY?: number }) {
   const id = useId()
   const p = PALETTE[variant]
   const petals = variant === 'main' ? 8 : 6
@@ -276,7 +276,7 @@ function Flower({ variant, className, tilt = 0, delay, instant }: { variant: Flo
       className={`flower ${className}`}
       viewBox="-50 -50 100 100"
       aria-hidden
-      style={{ originX: 0.5, originY: 0.85, rotate: tilt }}
+      style={{ originX: 0.5, originY, rotate: tilt }}
       initial={instant ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 210, damping: 11, delay: instant ? 0 : delay }}
@@ -318,15 +318,15 @@ function Flower({ variant, className, tilt = 0, delay, instant }: { variant: Flo
   )
 }
 
-/** Flowers and leaves spilling out of the top of the box. They sit behind it, so they read as growing out of it. */
+/**
+ * The bloom: one big flower opening up behind the box, centered on it, so the box sits in front
+ * of the blossom like a halo (Ruby: flowers behind the box, box centered in front).
+ */
 function Bloom({ instant }: { instant: boolean }) {
   return (
     <div className="bloom" aria-hidden>
-      <Leaf className="top-leaf top-leaf--l" rotate={-52} delay={0.34} instant={instant} />
-      <Leaf className="top-leaf top-leaf--r" rotate={52} delay={0.38} instant={instant} mirror />
-      <Flower variant="yellow" className="flower--side flower--l" tilt={-18} delay={0.32} instant={instant} />
-      <Flower variant="pink" className="flower--side flower--r" tilt={16} delay={0.38} instant={instant} />
-      <Flower variant="main" className="flower--main" delay={0.22} instant={instant} />
+      <Flower variant="pink" className="flower--halo-back" tilt={22.5} delay={0.3} instant={instant} originY={0.5} />
+      <Flower variant="main" className="flower--halo" delay={0.2} instant={instant} originY={0.5} />
     </div>
   )
 }
