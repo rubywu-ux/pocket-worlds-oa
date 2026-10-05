@@ -42,9 +42,10 @@ export default function App() {
     startedAt.current = performance.now()
     buzz(10)
     for (const s of STEPS) {
-      if (times[s] > 0) timers.current.push(window.setTimeout(() => setStep(s), times[s]))
+      const t = times[s]
+      if (t !== null && t > 0) timers.current.push(window.setTimeout(() => setStep(s), t))
     }
-    timers.current.push(window.setTimeout(() => buzz([18, 40, 26]), times.bloom))
+    timers.current.push(window.setTimeout(() => buzz([18, 40, 26]), times.bloom ?? 0))
   }, [reduced])
 
   /** Jump to the opened gift. viaSkip = the animation was cut short. */
@@ -54,11 +55,16 @@ export default function App() {
     setPhase('open')
   }, [])
 
-  /** One tap handler for the whole experience: open → skip → continue. */
+  /** One tap handler for the whole experience: open → skip → open the letter → continue. */
   const advance = useCallback(() => {
     if (phase === 'idle') return start()
     if (phase !== 'opening') return
     if (performance.now() - startedAt.current < SKIP_GRACE_MS) return
+    if (step === 'letter') {
+      buzz(12)
+      setStep('read')
+      return
+    }
     finish(step !== 'read')
   }, [phase, step, start, finish])
 

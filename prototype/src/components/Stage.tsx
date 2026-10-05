@@ -3,6 +3,7 @@ import { ART, ITEMS, SENDER, type GiftItem } from '../data'
 import { stepIndex, type Phase, type Step } from '../timeline'
 import { useViewport } from '../useViewport'
 import { Gift, type GiftMode } from './Gift'
+import { Letter } from './Letter'
 import { Note } from './Note'
 import { Burst, Twinkles } from './Particles'
 import { Button } from './ui'
@@ -157,24 +158,32 @@ function RisingItem({ item, index }: { item: GiftItem; index: number }) {
   )
 }
 
-/** Dims the scene, brings the envelope forward, and unfolds Irene's note for reading. */
+/**
+ * Dims the scene and brings the envelope forward. The letter ("from: Irene / sending to: Sage")
+ * slips out and waits for a tap; tapping fades it into Irene's note.
+ *   s = 2 envelope · 3 letterOut · 4 letter (waits for tap) · 5 read
+ */
 function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () => void }) {
-  const noteW = Math.min(w * 0.88, 600)
+  const cardW = Math.min(w * 0.88, 560)
+  const letterH = (cardW * 189) / 355
+  const noteH = (cardW * 119) / 355
   const envW = Math.min(w * 0.5, 230)
-  const envH = (envW * 167) / 156
-  const noteH = (noteW * 119) / 355
-  const k = (envW * 0.82) / noteW // the folded note is a bit narrower than the envelope
+  const envH = (envW * 668) / 624
+  const k = (envW * 0.82) / cardW // tucked inside, the letter is a bit narrower than the envelope
   const envTop = -envH / 2 + envH * 0.2 // the paper's top edge inside the tilted envelope art
-  const yHidden = envTop + 10 + (noteH * k) / 2
-  const yOut = envTop + 12 + (noteH * k) / 6
+  const yHidden = envTop + 10 + (letterH * k) / 2
+  const yPeek = envTop + 14 - letterH * k * 0.42 + (letterH * k) / 2
 
-  const noteAnim =
+  const letterAnim =
     s <= 2
       ? { y: yHidden, scale: k, opacity: 0, rotate: -4 }
       : s === 3
-        ? { y: yOut, scale: k, opacity: 1, rotate: -4 }
+        ? { y: yPeek, scale: k, opacity: 1, rotate: -4 }
         : { y: 0, scale: 1, opacity: 1, rotate: 0 }
-  const headingY = -noteH / 2 - Math.max(52, noteW * 0.13)
+
+  const gap = Math.max(50, cardW * 0.12)
+  const heading = s >= 5 ? `${SENDER.name} left you a note` : `A letter from ${SENDER.name}`
+  const headingY = s >= 5 ? -noteH / 2 - gap : -letterH / 2 - gap
 
   return (
     <motion.div
@@ -188,32 +197,70 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
         <motion.div
           className="note-spotlight"
           aria-hidden
-          style={{ width: noteW * 1.5, height: noteW * 1.1 }}
+          style={{ width: cardW * 1.5, height: cardW * 1.1 }}
           initial={{ opacity: 0, scale: 0.6 }}
           animate={s >= 4 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
         />
-        <motion.p
-          className="note-heading"
-          initial={{ opacity: 0, y: headingY + 12 }}
-          animate={s >= 4 ? { opacity: 1, y: headingY } : { opacity: 0, y: headingY + 12 }}
-          transition={{ delay: s >= 4 ? 0.35 : 0, type: 'spring', stiffness: 260, damping: 24 }}
-        >
-          <img src={SENDER.avatar} alt="" />
-          {SENDER.name} left you a note
-        </motion.p>
-        <Note
-          layoutId="note"
-          className="note--reading"
-          fold={s >= 4 ? 'open' : 'folded'}
-          sticker={s >= 5 ? 'slap' : 'none'}
-          style={{ width: noteW }}
-          initial={{ y: yHidden, scale: k, opacity: 0 }}
-          animate={noteAnim}
-          transition={{ type: 'spring', stiffness: 160, damping: 21, opacity: { duration: 0.15 } }}
-        />
+
+        <AnimatePresence mode="wait" initial={false}>
+          {s >= 4 && (
+            <motion.p
+              key={heading}
+              className="note-heading"
+              initial={{ opacity: 0, y: headingY + 12 }}
+              animate={{ opacity: 1, y: headingY }}
+              exit={{ opacity: 0, y: headingY - 8, transition: { duration: 0.18 } }}
+              transition={{ delay: s === 4 ? 0.35 : 0.1, type: 'spring', stiffness: 260, damping: 24 }}
+            >
+              <img src={SENDER.avatar} alt="" />
+              {heading}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        {/* The letter: slips out of the envelope, then waits to be tapped open */}
         <AnimatePresence>
-          {s < 5 && (
+          {s <= 4 && (
+            <motion.div
+              key="letter"
+              className="letter-slot"
+              style={{ width: cardW }}
+              initial={{ y: yHidden, scale: k, opacity: 0, rotate: -4 }}
+              animate={letterAnim}
+              exit={{ opacity: 0, scale: 1.04, filter: 'blur(6px)', transition: { duration: 0.4, ease: 'easeOut' } }}
+              transition={{ type: 'spring', stiffness: 160, damping: 21, opacity: { duration: 0.15 } }}
+            >
+              <motion.div
+                animate={s === 4 ? { scale: [1, 1.025, 1], rotate: [0, -1, 1, 0] } : { scale: 1, rotate: 0 }}
+                transition={s === 4 ? { duration: 1.6, repeat: Infinity, repeatDelay: 1.2, delay: 1, ease: 'easeInOut' } : { duration: 0.2 }}
+              >
+                <Letter
+                  role="button"
+                  aria-label={`Open the letter from ${SENDER.name}`}
+                  className={s === 4 ? 'letter--tappable' : ''}
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* The note: fades in where the letter was */}
+        {s >= 5 && (
+          <Note
+            layoutId="note"
+            className="note--reading"
+            fold="open"
+            sticker="slap"
+            style={{ width: cardW }}
+            initial={{ opacity: 0, scale: 0.94, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
+          />
+        )}
+
+        <AnimatePresence>
+          {s < 4 && (
             <motion.img
               key="env"
               layoutId="envelope"
@@ -223,29 +270,35 @@ function NoteOverlay({ s, w, onAdvance }: { s: number; w: number; onAdvance: () 
               className="envelope envelope--center"
               style={{ width: envW }}
               initial={false}
-              animate={
-                s >= 4
-                  ? { y: envH * 0.95, rotate: 14, opacity: 0, scale: 0.92 }
-                  : { y: 0, rotate: s === 2 ? [0, -7, 6, -4, 0] : 0, opacity: 1, scale: 1 }
-              }
-              exit={{ opacity: 0 }}
-              transition={
-                s >= 4
-                  ? { duration: 0.55, ease: [0.5, 0, 0.75, 0] }
-                  : { type: 'spring', stiffness: 200, damping: 18, rotate: { duration: 0.7, delay: 0.25 } }
-              }
+              animate={{ y: 0, rotate: s === 2 ? [0, -7, 6, -4, 0] : 0, opacity: 1, scale: 1 }}
+              exit={{ y: envH * 0.95, rotate: 14, opacity: 0, scale: 0.92, transition: { duration: 0.55, ease: [0.5, 0, 0.75, 0] } }}
+              transition={{ type: 'spring', stiffness: 200, damping: 18, rotate: { duration: 0.7, delay: 0.25 } }}
             />
           )}
         </AnimatePresence>
       </div>
+
       <div className="bottom">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
+          {s === 4 && (
+            <motion.p
+              key="tap"
+              className="tap-hint"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ delay: 0.9 }}
+            >
+              <span className="tap-dot" /> Tap the letter to open it
+            </motion.p>
+          )}
           {s >= 5 && (
             <motion.div
+              key="continue"
               className="bottom-inner"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, type: 'spring', stiffness: 300, damping: 26 }}
+              transition={{ delay: 0.7, type: 'spring', stiffness: 300, damping: 26 }}
             >
               <Button onClick={onAdvance}>Continue</Button>
             </motion.div>

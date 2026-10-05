@@ -488,6 +488,111 @@ img {
   height: auto;
 }
 
+/* ---------- Letter card (Checkout "from / sending to" frame, 355 × 189) ---------- */
+.letter-slot {
+  z-index: 1;
+}
+.letter {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+}
+.letter--tappable {
+  cursor: pointer;
+}
+.letter-inner {
+  position: relative;
+  height: 53.24cqw;
+  background: rgba(185, 240, 145, 0.9);
+  border-radius: 4.134cqw;
+  color: #374137;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.4);
+}
+.letter-avatar {
+  position: absolute;
+  left: 4.225cqw;
+  top: 3.662cqw;
+  width: 23.81cqw;
+  height: 23.98cqw;
+  border-radius: 4.225cqw;
+  object-fit: cover;
+  background: #c4c4c4;
+}
+.letter-label {
+  position: absolute;
+  font-weight: 400;
+  font-size: 3.03cqw;
+  line-height: 2.887cqw;
+  letter-spacing: -0.0303cqw;
+}
+.letter-label--from {
+  left: 29.6cqw;
+  top: 4.225cqw;
+}
+.letter-label--to {
+  left: 4.789cqw;
+  top: 37.355cqw;
+}
+.letter-name {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 7.042cqw;
+  line-height: 1;
+  letter-spacing: 0.0704cqw;
+}
+.letter-name--from {
+  left: 29.58cqw;
+  top: 6.837cqw;
+}
+.letter-name--to {
+  left: 4.789cqw;
+  top: 41.017cqw;
+}
+.letter-line {
+  position: absolute;
+  left: 4.789cqw;
+  top: 49.01cqw;
+  width: 60.86cqw;
+  height: max(1px, 0.27cqw);
+  background: #374137;
+}
+.letter-heart {
+  position: absolute;
+  left: 78.37cqw;
+  top: 3.44cqw;
+  width: 17.97cqw;
+  height: 17.97cqw;
+  transform: rotate(15.13deg);
+  overflow: visible;
+}
+.tap-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 16px;
+  font-size: 15px;
+  color: #c9d3c9;
+}
+.tap-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: tap-pulse 1.6s ease-out infinite;
+}
+@keyframes tap-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(112, 229, 29, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(112, 229, 29, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(112, 229, 29, 0);
+  }
+}
+
 /* ---------- Note (355 × 119 Figma frame, in container units) ---------- */
 .note {
   position: relative;
